@@ -1,2 +1,2 @@
-# Project_Rock_Hopper
+# Project Rock Hopper
  A 2D Space Mining Game
