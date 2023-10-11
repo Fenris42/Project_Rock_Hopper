@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player_Movement : MonoBehaviour
 {
-    [SerializeField] float RunSpeed;
+    [SerializeField] float MoveSpeed;
 
     private Animator animator;
     private SpriteRenderer sprite;
@@ -24,32 +24,45 @@ public class Player_Movement : MonoBehaviour
 
     private void Movement()
     {
-        if (Input.GetKey(KeyCode.A))
-        {//left
-            MoveLeft();
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {//right
-            MoveRight();
+        if (Input.GetKey(KeyCode.Space))
+        {//jetpack movement
+
         }
         else
-        {
-            ResetAnimator();
+        {//ground movement
+            if (Input.GetKey(KeyCode.A))
+            {//left
+                MoveLeft();
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {//right
+                MoveRight();
+            }
+            else
+            {
+                ResetAnimator();
+            }
         }
+        
     }
 
     private void MoveLeft()
     {
         animator.SetBool("Run", true);
         sprite.flipX = true;
-        transform.position += (Vector3.left * RunSpeed) * Time.deltaTime;
+        transform.position += (Vector3.left * MoveSpeed) * Time.deltaTime;
     }
 
     private void MoveRight()
     {
         animator.SetBool("Run", true);
         sprite.flipX = false;
-        transform.position += (Vector3.right * RunSpeed) * Time.deltaTime;
+        transform.position += (Vector3.right * MoveSpeed) * Time.deltaTime;
+    }
+
+    private void Fly()
+    {
+
     }
 
     private void ResetAnimator()
