@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player_Movement : MonoBehaviour
 {
-    [SerializeField] float MoveSpeed;
+    [SerializeField] float moveSpeed;
+    [SerializeField] float flySpeed;
 
     private Animator animator;
     private SpriteRenderer sprite;
@@ -26,49 +28,49 @@ public class Player_Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {//jetpack movement
+            Fly();
+        }
 
+        if (Input.GetKey(KeyCode.A))
+        {//left
+            MoveLeft();
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {//right
+            MoveRight();
         }
         else
-        {//ground movement
-            if (Input.GetKey(KeyCode.A))
-            {//left
-                MoveLeft();
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {//right
-                MoveRight();
-            }
-            else
-            {
-                ResetAnimator();
-            }
+        {
+            animator.SetBool("Run", false);
         }
-        
     }
 
     private void MoveLeft()
     {
         animator.SetBool("Run", true);
         sprite.flipX = true;
-        transform.position += (Vector3.left * MoveSpeed) * Time.deltaTime;
+        transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
     }
 
     private void MoveRight()
     {
         animator.SetBool("Run", true);
         sprite.flipX = false;
-        transform.position += (Vector3.right * MoveSpeed) * Time.deltaTime;
+        transform.position += (Vector3.right * moveSpeed) * Time.deltaTime;
     }
 
     private void Fly()
     {
-
+        animator.SetBool("Fly", true);
+        transform.position += (Vector3.up * flySpeed) * Time.deltaTime;
     }
 
-    private void ResetAnimator()
-    {//reset animator to idle
-
-        animator.SetBool("Run", false);
-        animator.SetBool("Fly", false);
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {//player is grounded
+            animator.SetBool("Fly", false);
+        }
     }
+
 }

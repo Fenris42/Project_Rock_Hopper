@@ -135,9 +135,9 @@ GameObject:
   - component: {fileID: 16535144}
   - component: {fileID: 16535143}
   - component: {fileID: 16535145}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Destructible Tiles
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3691,6 +3691,18 @@ PrefabInstance:
     - target: {fileID: 3150878656535797251, guid: 8d80ee103a8841d4da58a40f5b5c111e, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150878656535797251, guid: 8d80ee103a8841d4da58a40f5b5c111e, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8569093381346024172, guid: 8d80ee103a8841d4da58a40f5b5c111e, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8569093381346024172, guid: 8d80ee103a8841d4da58a40f5b5c111e, type: 3}
+      propertyPath: m_GravityScale
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 9119793593416913817, guid: 8d80ee103a8841d4da58a40f5b5c111e, type: 3}
       propertyPath: MoveSpeed
