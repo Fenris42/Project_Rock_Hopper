@@ -42,6 +42,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 1142696303
+    locked: 0
   - name: Player
     uniqueID: 1516420675
+    locked: 0
+  - name: Destructable Tiles
+    uniqueID: 1104946027
     locked: 0
