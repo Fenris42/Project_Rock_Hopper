@@ -1,29 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class Laser : MonoBehaviour
 {
     [SerializeField] float range;
+    [SerializeField] LayerMask laserTargets;
+
     private Tilemap tilemap;
     private Animator animator;
     private GameObject player;
+    private SpriteRenderer laserSprite;
 
     void Start()
     {// Start is called before the first frame update
 
         tilemap = GameObject.Find("Destructible Tiles").GetComponent<Tilemap>();
-        animator = transform.Find("Laser").GetComponent<Animator>();
+        animator = GameObject.Find("Player/Laser").GetComponent<Animator>();
         player = GameObject.Find("Player");
-
+        laserSprite = GameObject.Find("Player/Laser").GetComponent<SpriteRenderer>();
+        laserSprite.enabled = false;
     }
         
     void Update()
     {// Update is called once per frame
 
         PlayerInput();
-        DebugDig();
+        //DebugDig();
 
 
     }
@@ -37,56 +44,48 @@ public class Laser : MonoBehaviour
         else
         {
             animator.SetBool("Dig", false);
+            laserSprite.enabled = false;
         }
     }
 
     private void Fire()
-    {
+    {//fire laser and check for contacts
+
+        laserSprite.enabled = true;
         animator.SetBool("Dig", true);
 
-        //player coords
-        float px = player.transform.position.x;
-        float py = player.transform.position.y;
-
-        //coords for box overlap centerpoint
-        float offset;
-
-        if (range <= 1)
-        {
-            offset = 1;
-        }
-        else
-        {
-            offset = (range / 2) + 0.5f;
-        }
-
-        //get all targets in range of laser
-        Collider2D[] targets = { };
+        RaycastHit2D ray = new RaycastHit2D();
 
         if (player.transform.localScale.x == 1)
         {//facing right
-
-            targets = Physics2D.OverlapBoxAll(new Vector2(px + offset, py), new Vector2(range, 0.1f), 0);
-
+            ray = Physics2D.Raycast(transform.position, Vector2.right, range, laserTargets);
         }
         else if (player.transform.localScale.x == -1)
         {//facing left
-            targets = Physics2D.OverlapBoxAll(new Vector2(px - offset, py), new Vector2(range, 0.1f), 0);
+            ray = Physics2D.Raycast(transform.position, Vector2.left, range, laserTargets);
         }
 
-        
-        foreach (Collider2D target in targets)
-        {
-            if (target.tag == "Ground")
-            {//target is minable
-                Vector3Int tile = tilemap.WorldToCell(target.transform.position);
+        if (ray.collider == true)
+        {//ray has a hit return
+
+            if (ray.collider.gameObject.CompareTag("Ground"))
+            {//hit is minable
+
+                //get coords of ray contact and translate into tile coordinates
+                Vector3 hitpos = Vector3.zero;
+                hitpos.x = ray.point.x - 0.01f * ray.normal.x;
+                hitpos.y = ray.point.y - 0.01f * ray.normal.y;
+                Vector3Int tile = tilemap.WorldToCell(hitpos);
+
+                //set tile to empty
                 tilemap.SetTile(tile, null);
             }
         }
     }
 
     private void DebugDig()
-    {
+    {//deletes tile on click (temporary code)
+
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (Input.GetMouseButtonDown(0))
@@ -95,7 +94,7 @@ public class Laser : MonoBehaviour
             tilemap.SetTile(tile, null);
         }
     }
-
+    
     private void OnDrawGizmosSelected()
     {//draw lasers range in editor
 
@@ -115,10 +114,9 @@ public class Laser : MonoBehaviour
             offset = (range / 2) + 0.5f;
         }
 
-        //left
-        Gizmos.DrawWireCube(new Vector2(x - offset, y), new Vector2(range, 0.1f));
-
         //right
-        Gizmos.DrawWireCube(new Vector2(x + offset, y), new Vector2(range, 0.1f));
+        Gizmos.DrawWireCube(new Vector2(x + offset, y), new Vector2(range, 0.25f));
     }
+    
+
 }

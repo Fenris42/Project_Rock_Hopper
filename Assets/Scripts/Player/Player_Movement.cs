@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Player_Movement : MonoBehaviour
 {
@@ -12,18 +13,18 @@ public class Player_Movement : MonoBehaviour
     private Rigidbody2D rigidbody;
 
 
-
-    // Start is called before the first frame update
+    
     void Start()
-    {
+    {// Start is called before the first frame update
+
         animator = transform.Find("Sprite").GetComponent<Animator>();
         rigidbody = GetComponent<Rigidbody2D>();
-
     }
 
-    // Update is called once per frame
+    
     void Update()
-    {
+    {// Update is called once per frame
+
         PlayerInput();
     }
 
@@ -79,7 +80,6 @@ public class Player_Movement : MonoBehaviour
         if (collision.gameObject.tag == "Ground")
         {//player is grounded
             animator.SetBool("Fly", false);
-            
         }
     }
 
