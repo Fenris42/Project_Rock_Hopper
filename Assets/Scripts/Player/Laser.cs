@@ -16,6 +16,11 @@ public class Laser : MonoBehaviour
     private GameObject player;
     private SpriteRenderer laserSprite;
 
+    //for calculating players rotation
+    //private float adjacent;
+    //private float opposite;
+    //private float angle;
+
     void Start()
     {// Start is called before the first frame update
 
@@ -39,48 +44,63 @@ public class Laser : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {//left mouse click
-            Fire();
+            Fire(true);
         }
         else
         {
-            animator.SetBool("Dig", false);
-            laserSprite.enabled = false;
+            Fire(false);
         }
     }
 
-    private void Fire()
+    private void Fire(bool fire)
     {//fire laser and check for contacts
 
-        laserSprite.enabled = true;
-        animator.SetBool("Dig", true);
+        if (fire == true)
+        {//fire laser
 
-        RaycastHit2D ray = new RaycastHit2D();
+            laserSprite.enabled = true;
+            animator.SetBool("Dig", true);
 
-        if (player.transform.localScale.x == 1)
-        {//facing right
-            ray = Physics2D.Raycast(transform.position, Vector2.right, range, laserTargets);
-        }
-        else if (player.transform.localScale.x == -1)
-        {//facing left
-            ray = Physics2D.Raycast(transform.position, Vector2.left, range, laserTargets);
-        }
+            //convert players rotation into a vector2 for raycast
+            Vector2 direction;
 
-        if (ray.collider == true)
-        {//ray has a hit return
+            if (player.transform.localScale.x == 1)
+            {//player facing right
+                direction = transform.right;
+            }
+            else
+            {//player facing left
+                direction = transform.right * -1;
+            }
 
-            if (ray.collider.gameObject.CompareTag("Ground"))
-            {//hit is minable
 
-                //get coords of ray contact and translate into tile coordinates
-                Vector3 hitpos = Vector3.zero;
-                hitpos.x = ray.point.x - 0.01f * ray.normal.x;
-                hitpos.y = ray.point.y - 0.01f * ray.normal.y;
-                Vector3Int tile = tilemap.WorldToCell(hitpos);
+            //fire ray to detect targetable objects
+            RaycastHit2D ray = new RaycastHit2D();
+            ray = Physics2D.Raycast(player.transform.position, direction, range, laserTargets);
 
-                //set tile to empty
-                tilemap.SetTile(tile, null);
+            if (ray.collider == true)
+            {//ray has a hit return
+
+                if (ray.collider.gameObject.CompareTag("Ground"))
+                {//hit is minable
+
+                    //get coords of ray contact and translate into tile coordinates
+                    Vector3 hitpos = Vector3.zero;
+                    hitpos.x = ray.point.x - 0.01f * ray.normal.x;
+                    hitpos.y = ray.point.y - 0.01f * ray.normal.y;
+                    Vector3Int tile = tilemap.WorldToCell(hitpos);
+
+                    //set tile to empty
+                    tilemap.SetTile(tile, null);
+                }
             }
         }
+        else
+        {//reset laser animation
+            animator.SetBool("Dig", false);
+            laserSprite.enabled = false;
+        }
+        
     }
 
     private void DebugDig()
@@ -111,10 +131,10 @@ public class Laser : MonoBehaviour
         }
         else
         {//correctly offsets the center point of the cube based on range
-            offset = (range / 2) + 0.5f;
+            offset = (range / 2);
         }
 
-        //right
+        //draw box in editor
         Gizmos.DrawWireCube(new Vector2(x + offset, y), new Vector2(range, 0.25f));
     }
     
