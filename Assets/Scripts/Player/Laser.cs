@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
+using UnityEngine.WSA;
 using static UnityEngine.GraphicsBuffer;
 
 public class Laser : MonoBehaviour
 {
     [SerializeField] float range;
-    [SerializeField] LayerMask laserTargets;
+    [SerializeField] LayerMask fireMask;
+    [SerializeField] LayerMask pickupMask;
 
     private Tilemap tilemap;
     private Animator animator;
@@ -51,6 +53,28 @@ public class Laser : MonoBehaviour
         }
     }
 
+    private RaycastHit2D Ray(LayerMask layermask)
+    {
+        //convert players rotation into a vector2 for raycast
+        Vector2 direction;
+
+        //get direction/angle to fire ray in
+        if (player.transform.localScale.x == 1)
+        {//player facing right
+            direction = transform.right;
+        }
+        else
+        {//player facing left
+            direction = transform.right * -1;
+        }
+
+        //fire ray to detect targetable objects
+        RaycastHit2D ray = new RaycastHit2D();
+        ray = Physics2D.Raycast(player.transform.position, direction, range, layermask);
+
+        return ray;
+    }
+
     private void Fire(bool fire)
     {//fire laser and check for contacts
 
@@ -61,22 +85,8 @@ public class Laser : MonoBehaviour
             laserSprite.enabled = true;
             animator.SetBool("Fire", true);
 
-            //convert players rotation into a vector2 for raycast
-            Vector2 direction;
-
-            //get direction/angle to fire ray in
-            if (player.transform.localScale.x == 1)
-            {//player facing right
-                direction = transform.right;
-            }
-            else
-            {//player facing left
-                direction = transform.right * -1;
-            }
-
-            //fire ray to detect targetable objects
-            RaycastHit2D ray = new RaycastHit2D();
-            ray = Physics2D.Raycast(player.transform.position, direction, range, laserTargets);
+            //fire ray to detect interactable objects
+            RaycastHit2D ray = Ray(fireMask);
 
             if (ray.collider == true)
             {//ray has a hit return
@@ -127,12 +137,36 @@ public class Laser : MonoBehaviour
             laserSprite.enabled = true;
             animator.SetBool("Suck", true);
 
+            //fire ray to detect interactable objects
+            RaycastHit2D ray = Ray(pickupMask);
+
+            if (ray.collider == true)
+            {//ray has a hit return
+
+                //convert ray to game object
+                GameObject item = ray.collider.gameObject;
+
+                //pickup item
+                Pickup(item);
+            }
         }
         else
         {//reset animation
             animator.SetBool("Suck", false);
             laserSprite.enabled = false;
         }
+    }
+
+    private void Pickup(GameObject item)
+    {//pickup item
+
+        if (item.CompareTag("Ore"))
+        {//Add resource
+
+            //delete drop game object
+            Destroy(item);
+        }
+
     }
 
     private void OnDrawGizmosSelected()

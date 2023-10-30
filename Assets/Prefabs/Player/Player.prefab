@@ -255,9 +255,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 2.5
-  laserTargets:
+  fireMask:
     serializedVersion: 2
     m_Bits: 64
+  pickupMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &8305357035657966437
 GameObject:
   m_ObjectHideFlags: 0
