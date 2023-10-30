@@ -48,6 +48,9 @@ TagManager:
   - name: Player
     uniqueID: 1516420675
     locked: 0
+  - name: Loot
+    uniqueID: 1153930329
+    locked: 0
   - name: Destructable Tiles
     uniqueID: 1104946027
     locked: 0

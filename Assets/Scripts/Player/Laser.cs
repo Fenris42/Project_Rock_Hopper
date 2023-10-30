@@ -16,10 +16,7 @@ public class Laser : MonoBehaviour
     private GameObject player;
     private SpriteRenderer laserSprite;
 
-    //for calculating players rotation
-    //private float adjacent;
-    //private float opposite;
-    //private float angle;
+
 
     void Start()
     {// Start is called before the first frame update
@@ -35,9 +32,6 @@ public class Laser : MonoBehaviour
     {// Update is called once per frame
 
         PlayerInput();
-        //DebugDig();
-
-
     }
 
     private void PlayerInput()
@@ -46,9 +40,14 @@ public class Laser : MonoBehaviour
         {//left mouse click
             Fire(true);
         }
+        else if (Input.GetMouseButton(1))
+        {//right mouse click
+            Suck(true);
+        }
         else
-        {
+        {//animation resets
             Fire(false);
+            Suck(false);
         }
     }
 
@@ -58,12 +57,14 @@ public class Laser : MonoBehaviour
         if (fire == true)
         {//fire laser
 
+            //enable mining animation
             laserSprite.enabled = true;
-            animator.SetBool("Dig", true);
+            animator.SetBool("Fire", true);
 
             //convert players rotation into a vector2 for raycast
             Vector2 direction;
 
+            //get direction/angle to fire ray in
             if (player.transform.localScale.x == 1)
             {//player facing right
                 direction = transform.right;
@@ -72,7 +73,6 @@ public class Laser : MonoBehaviour
             {//player facing left
                 direction = transform.right * -1;
             }
-
 
             //fire ray to detect targetable objects
             RaycastHit2D ray = new RaycastHit2D();
@@ -83,38 +83,58 @@ public class Laser : MonoBehaviour
 
                 if (ray.collider.gameObject.CompareTag("Ground"))
                 {//hit is minable
-
-                    //get coords of ray contact and translate into tile coordinates
-                    Vector3 hitpos = Vector3.zero;
-                    hitpos.x = ray.point.x - 0.01f * ray.normal.x;
-                    hitpos.y = ray.point.y - 0.01f * ray.normal.y;
-                    Vector3Int tile = tilemap.WorldToCell(hitpos);
-
-                    //set tile to empty
-                    tilemap.SetTile(tile, null);
+                    Mine(ray);      
                 }
             }
         }
         else
         {//reset laser animation
-            animator.SetBool("Dig", false);
+            animator.SetBool("Fire", false);
             laserSprite.enabled = false;
         }
-        
     }
 
-    private void DebugDig()
-    {//deletes tile on click (temporary code)
+    private void Mine(RaycastHit2D ray)
+    {
+        //get coords of ray contact and translate into tile coordinates
+        Vector3 hitpos = Vector3.zero;
+        hitpos.x = ray.point.x - 0.01f * ray.normal.x;
+        hitpos.y = ray.point.y - 0.01f * ray.normal.y;
+        Vector3Int tile = tilemap.WorldToCell(hitpos);
 
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //get tile info
+        var tileinfo = tilemap.GetTile(tile);
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3Int tile = tilemap.WorldToCell(mousePos);
+        if (tileinfo.name == "Regolith")
+        {//mine quick and drop nothing
+            tilemap.SetTile(tile, null);
+        }
+        else if (tileinfo.name == "Ore")
+        {//drop ore
+
+            //get ore prefab
+            Instantiate(Resources.Load("Ore"), hitpos, Quaternion.identity);
             tilemap.SetTile(tile, null);
         }
     }
-    
+
+    private void Suck(bool suck)
+    {//suck up drops
+
+        if (suck == true)
+        {
+            //enable sucking animation
+            laserSprite.enabled = true;
+            animator.SetBool("Suck", true);
+
+        }
+        else
+        {//reset animation
+            animator.SetBool("Suck", false);
+            laserSprite.enabled = false;
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {//draw lasers range in editor
 
@@ -137,6 +157,4 @@ public class Laser : MonoBehaviour
         //draw box in editor
         Gizmos.DrawWireCube(new Vector2(x + offset, y), new Vector2(range, 0.25f));
     }
-    
-
 }

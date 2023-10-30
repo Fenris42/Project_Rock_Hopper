@@ -63,11 +63,12 @@ public class Player_Movement : MonoBehaviour
         //mouse location
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        //right angle calculation
+        //right angle triangle calculation
         float adjacent = mousePos.x - playerPos.x;
         float opposite = mousePos.y - playerPos.y;
         float angle = Mathf.Atan(opposite / adjacent) * (180 / Mathf.PI);
 
+        //rotate player (temp)
         player.transform.eulerAngles = new Vector3(0, 0, angle);
 
         //flip player to face direction of mouse
@@ -84,12 +85,14 @@ public class Player_Movement : MonoBehaviour
     private void MoveLeft()
     {
         animator.SetBool("Run", true);
+        //player.transform.localScale = new Vector3(-1, 1, 1);
         player.transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
     }
 
     private void MoveRight()
     {
         animator.SetBool("Run", true);
+        //player.transform.localScale = new Vector3(1, 1, 1);
         player.transform.position += (Vector3.right * moveSpeed) * Time.deltaTime;
     }
 
