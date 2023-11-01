@@ -55,3 +55,6 @@ TagManager:
   - name: Destructable Tiles
     uniqueID: 1104946027
     locked: 0
+  - name: UI
+    uniqueID: 2290066631
+    locked: 0
