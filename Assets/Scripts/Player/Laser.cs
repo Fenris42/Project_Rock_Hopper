@@ -10,6 +10,7 @@ using static UnityEngine.GraphicsBuffer;
 public class Laser : MonoBehaviour
 {
     [SerializeField] float range;
+    [SerializeField] int energyConsumption;
     [SerializeField] LayerMask fireMask;
     [SerializeField] LayerMask pickupMask;
 
@@ -17,15 +18,22 @@ public class Laser : MonoBehaviour
     private Animator animator;
     private GameObject player;
     private SpriteRenderer laserSprite;
+    private Player_Stats playerStats;
+    private Player_Inventory playerInventory;
+    private float timer;
+    private bool laserRunning;
 
 
 
     void Start()
     {// Start is called before the first frame update
 
+        //get components
         tilemap = GameObject.Find("Destructible Tiles").GetComponent<Tilemap>();
         animator = GameObject.Find("Player/Laser").GetComponent<Animator>();
         player = GameObject.Find("Player");
+        playerStats = player.GetComponent<Player_Stats>();
+        playerInventory = player.GetComponent<Player_Inventory>();
         laserSprite = GameObject.Find("Player/Laser").GetComponent<SpriteRenderer>();
         laserSprite.enabled = false;
     }
@@ -34,6 +42,18 @@ public class Laser : MonoBehaviour
     {// Update is called once per frame
 
         PlayerInput();
+
+        if (laserRunning == true)
+        {//drain energy
+
+         //convert frames to seconds
+            timer += Time.deltaTime;
+            if (timer > 1)
+            {
+                playerStats.Remove_Energy(energyConsumption);
+                timer = 0;
+            }
+        }
     }
 
     private void PlayerInput()
@@ -85,6 +105,9 @@ public class Laser : MonoBehaviour
             laserSprite.enabled = true;
             animator.SetBool("Fire", true);
 
+            //drain energy
+            laserRunning = true;
+
             //fire ray to detect interactable objects
             RaycastHit2D ray = Ray(fireMask);
 
@@ -98,9 +121,10 @@ public class Laser : MonoBehaviour
             }
         }
         else
-        {//reset laser animation
+        {//reset laser
             animator.SetBool("Fire", false);
             laserSprite.enabled = false;
+            laserRunning = false;
         }
     }
 
@@ -137,6 +161,9 @@ public class Laser : MonoBehaviour
             laserSprite.enabled = true;
             animator.SetBool("Suck", true);
 
+            //drain energy
+            laserRunning = true;
+
             //fire ray to detect interactable objects
             RaycastHit2D ray = Ray(pickupMask);
 
@@ -151,21 +178,21 @@ public class Laser : MonoBehaviour
             }
         }
         else
-        {//reset animation
+        {//reset laser
             animator.SetBool("Suck", false);
             laserSprite.enabled = false;
+            laserRunning = false;
         }
     }
 
     private void Pickup(GameObject item)
     {//pickup item
+        
+        //add item to inventory
+        playerInventory.AddItem(item);
 
-        if (item.CompareTag("Ore"))
-        {//Add resource
-
-            //delete drop game object
-            Destroy(item);
-        }
+        //destroy item
+        Destroy(item);
 
     }
 
