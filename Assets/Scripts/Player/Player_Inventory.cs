@@ -10,10 +10,15 @@ public class Player_Inventory : MonoBehaviour
 
     //private variables
     private int mass;
-    private int ore;
-
     private TMP_Text massText;
-    private TMP_Text oreText;
+
+    private int rock;
+    private TMP_Text rockText;
+
+    private int ice;
+    private TMP_Text iceText;
+
+    
 
 
     void Start()
@@ -21,11 +26,13 @@ public class Player_Inventory : MonoBehaviour
 
         //get components
         massText = GameObject.Find("HUD/Canvas/Inventory/Background/Mass").GetComponent<TMP_Text>();
-        oreText = GameObject.Find("HUD/Canvas/Inventory/Background/Ore/Count").GetComponent<TMP_Text>();
+        rockText = GameObject.Find("HUD/Canvas/Inventory/Background/Rock/Count").GetComponent<TMP_Text>();
+        iceText = GameObject.Find("HUD/Canvas/Inventory/Background/Ice/Count").GetComponent<TMP_Text>();
 
         //initialize fields
         mass = 0;
-        ore = 0;
+        ice = 0;
+        rock = 0;
         UpdateHUD();
 
     }
@@ -35,23 +42,37 @@ public class Player_Inventory : MonoBehaviour
 
     }
 
-    public void AddItem(GameObject item)
-    {
-        if (item.CompareTag("Ore"))
-        {
-            ore += 1;
-        }
+    public void Pickup(GameObject item)
+    {//pickup item
 
-        UpdateHUD();
+        if (mass < maxMass)
+        {
+            //add item to inventory
+            switch (item.tag)
+            {
+                case "Rock":
+                    rock += 1;
+                    break;
+                case "Ice_Ore":
+                    ice += 1;
+                    break;
+            }
+
+            UpdateHUD();
+
+            //destroy item
+            Destroy(item);
+        }
     }
 
     private void UpdateHUD()
     {
         //mass
-        mass = ore;
+        mass = rock + ice;
         massText.text = mass + " / " + maxMass + " KG";
 
-        //ore
-        oreText.text = ore.ToString();
+        //counters
+        rockText.text = rock.ToString();
+        iceText.text = ice.ToString();
     }
 }

@@ -139,17 +139,18 @@ public class Laser : MonoBehaviour
         //get tile info
         var tileinfo = tilemap.GetTile(tile);
 
-        if (tileinfo.name == "Regolith")
-        {//mine quick and drop nothing
-            tilemap.SetTile(tile, null);
+        switch (tileinfo.name)
+        {
+            case "Regolith":
+                Instantiate(Resources.Load("Prefab_Rock"), hitpos, Quaternion.identity);
+                break;
+            case "Ice_Ore":
+                Instantiate(Resources.Load("Prefab_Ice"), hitpos, Quaternion.identity);
+                break;
         }
-        else if (tileinfo.name == "Ore")
-        {//drop ore
 
-            //get ore prefab
-            Instantiate(Resources.Load("Ore"), hitpos, Quaternion.identity);
-            tilemap.SetTile(tile, null);
-        }
+        //set tile to empty
+        tilemap.SetTile(tile, null);
     }
 
     private void Suck(bool suck)
@@ -174,7 +175,7 @@ public class Laser : MonoBehaviour
                 GameObject item = ray.collider.gameObject;
 
                 //pickup item
-                Pickup(item);
+                playerInventory.Pickup(item);
             }
         }
         else
@@ -183,17 +184,6 @@ public class Laser : MonoBehaviour
             laserSprite.enabled = false;
             laserRunning = false;
         }
-    }
-
-    private void Pickup(GameObject item)
-    {//pickup item
-        
-        //add item to inventory
-        playerInventory.AddItem(item);
-
-        //destroy item
-        Destroy(item);
-
     }
 
     private void OnDrawGizmosSelected()
