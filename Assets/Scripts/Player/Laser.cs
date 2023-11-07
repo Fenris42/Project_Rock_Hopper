@@ -11,18 +11,21 @@ public class Laser : MonoBehaviour
 {
     [SerializeField] float range;
     [SerializeField] int energyConsumption;
+    [SerializeField] float L1DigTime;
     [SerializeField] LayerMask fireMask;
     [SerializeField] LayerMask pickupMask;
 
     private Tilemap tilemap;
+    private Tilemap crackTilemap;
     private Animator animator;
     private GameObject player;
     private SpriteRenderer laserSprite;
     private Player_Stats playerStats;
     private Player_Inventory playerInventory;
-    private float timer;
+    private float energyTimer;
+    private float crackTimer;
     private bool laserRunning;
-
+    
 
 
     void Start()
@@ -30,6 +33,7 @@ public class Laser : MonoBehaviour
 
         //get components
         tilemap = GameObject.Find("Destructible Tiles").GetComponent<Tilemap>();
+        crackTilemap = GameObject.Find("Crack Tiles").GetComponent<Tilemap>();
         animator = GameObject.Find("Player/Laser").GetComponent<Animator>();
         player = GameObject.Find("Player");
         playerStats = player.GetComponent<Player_Stats>();
@@ -47,12 +51,16 @@ public class Laser : MonoBehaviour
         {//drain energy
 
          //convert frames to seconds
-            timer += Time.deltaTime;
-            if (timer > 1)
+            energyTimer += Time.deltaTime;
+            if (energyTimer > 1)
             {
                 playerStats.Remove_Energy(energyConsumption);
-                timer = 0;
+                energyTimer = 0;
             }
+        }
+        else
+        {//reset timer
+            energyTimer = 0;
         }
     }
 
@@ -135,6 +143,7 @@ public class Laser : MonoBehaviour
         hitpos.x = ray.point.x - 0.01f * ray.normal.x;
         hitpos.y = ray.point.y - 0.01f * ray.normal.y;
         Vector3Int tile = tilemap.WorldToCell(hitpos);
+        Vector3Int crackTile = crackTilemap.WorldToCell(hitpos);
 
         //get tile info
         var tileinfo = tilemap.GetTile(tile);
@@ -142,10 +151,10 @@ public class Laser : MonoBehaviour
         switch (tileinfo.name)
         {
             case "Regolith":
-                Instantiate(Resources.Load("Prefab_Rock"), hitpos, Quaternion.identity);
+                Instantiate(Resources.Load("Rock"), hitpos, Quaternion.identity);
                 break;
             case "Ice_Ore":
-                Instantiate(Resources.Load("Prefab_Ice"), hitpos, Quaternion.identity);
+                Instantiate(Resources.Load("Ice"), hitpos, Quaternion.identity);
                 break;
         }
 

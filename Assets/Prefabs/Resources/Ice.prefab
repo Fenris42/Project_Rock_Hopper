@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 1105350765124499357}
   - component: {fileID: 6454244578518230699}
   m_Layer: 8
-  m_Name: Prefab_Ice
+  m_Name: Ice
   m_TagString: Ice_Ore
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

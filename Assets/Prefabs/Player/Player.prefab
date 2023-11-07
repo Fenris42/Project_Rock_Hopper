@@ -258,6 +258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 2.5
   energyConsumption: 1
+  L1DigTime: 1
   fireMask:
     serializedVersion: 2
     m_Bits: 64
