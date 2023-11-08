@@ -11,17 +11,15 @@ public class Laser : MonoBehaviour
 {
     [SerializeField] float range;
     [SerializeField] int energyConsumption;
-    [SerializeField] float L1DigTime;
     [SerializeField] LayerMask fireMask;
     [SerializeField] LayerMask pickupMask;
 
-    private Tilemap tilemap;
-    private Tilemap crackTilemap;
     private Animator animator;
     private GameObject player;
     private SpriteRenderer laserSprite;
     private Player_Stats playerStats;
     private Player_Inventory playerInventory;
+    private Mining mining;
     private float energyTimer;
     private float crackTimer;
     private bool laserRunning;
@@ -32,14 +30,13 @@ public class Laser : MonoBehaviour
     {// Start is called before the first frame update
 
         //get components
-        tilemap = GameObject.Find("Destructible Tiles").GetComponent<Tilemap>();
-        crackTilemap = GameObject.Find("Crack Tiles").GetComponent<Tilemap>();
         animator = GameObject.Find("Player/Laser").GetComponent<Animator>();
         player = GameObject.Find("Player");
         playerStats = player.GetComponent<Player_Stats>();
         playerInventory = player.GetComponent<Player_Inventory>();
         laserSprite = GameObject.Find("Player/Laser").GetComponent<SpriteRenderer>();
         laserSprite.enabled = false;
+        mining = GameObject.Find("Level").GetComponent<Mining>();
     }
         
     void Update()
@@ -124,7 +121,7 @@ public class Laser : MonoBehaviour
 
                 if (ray.collider.gameObject.CompareTag("Ground"))
                 {//hit is minable
-                    Mine(ray);      
+                    mining.Mine(ray);      
                 }
             }
         }
@@ -134,32 +131,6 @@ public class Laser : MonoBehaviour
             laserSprite.enabled = false;
             laserRunning = false;
         }
-    }
-
-    private void Mine(RaycastHit2D ray)
-    {
-        //get coords of ray contact and translate into tile coordinates
-        Vector3 hitpos = Vector3.zero;
-        hitpos.x = ray.point.x - 0.01f * ray.normal.x;
-        hitpos.y = ray.point.y - 0.01f * ray.normal.y;
-        Vector3Int tile = tilemap.WorldToCell(hitpos);
-        Vector3Int crackTile = crackTilemap.WorldToCell(hitpos);
-
-        //get tile info
-        var tileinfo = tilemap.GetTile(tile);
-
-        switch (tileinfo.name)
-        {
-            case "Regolith":
-                Instantiate(Resources.Load("Rock"), hitpos, Quaternion.identity);
-                break;
-            case "Ice_Ore":
-                Instantiate(Resources.Load("Ice"), hitpos, Quaternion.identity);
-                break;
-        }
-
-        //set tile to empty
-        tilemap.SetTile(tile, null);
     }
 
     private void Suck(bool suck)

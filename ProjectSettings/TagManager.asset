@@ -47,6 +47,9 @@ TagManager:
   - name: Background
     uniqueID: 1142696303
     locked: 0
+  - name: Ships
+    uniqueID: 2964697943
+    locked: 0
   - name: Player
     uniqueID: 1516420675
     locked: 0
