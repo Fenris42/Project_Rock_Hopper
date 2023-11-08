@@ -4,26 +4,40 @@ using UnityEngine;
 
 public class Player_Stats : MonoBehaviour
 {
-    //serialized variables
+    [Header("Health")]
     [SerializeField] private int maxHealth;
+    [SerializeField] private int healthRegen;
+    [Header("Oxygen")]
     [SerializeField] private int maxOxygen;
+    [SerializeField] private int oxygenRegen;
+    [SerializeField] private int oxygenDrain;
+    [Header("Energy")]
     [SerializeField] private int maxEnergy;
+    [SerializeField] private int energyRegen;
+    [SerializeField] private int flyEnergy;
+    [SerializeField] private int mineEnergy;
+    [SerializeField] private int suckEnergy;
 
-    //private variables
     private int health;
     private int oxygen;
     private int energy;
-
     private Stat_Bar healthBar;
     private Stat_Bar oxygenBar;
     private Stat_Bar energyBar;
-
     private float timer;
-    
+    private Player_Movement playerMovement;
+    private Laser laser;
+    private GameObject player;
+    private bool isOutside;
+
+
     void Start()
     {// Start is called before the first frame update
 
         //get components
+        player = GameObject.Find("Player");
+        playerMovement = player.GetComponent<Player_Movement>();
+        laser = player.GetComponent <Laser>();
         healthBar = GameObject.Find("HUD/Canvas/Health Bar").GetComponent<Stat_Bar>();
         oxygenBar = GameObject.Find("HUD/Canvas/Oxygen Bar").GetComponent<Stat_Bar>();
         energyBar = GameObject.Find("HUD/Canvas/Energy Bar").GetComponent<Stat_Bar>();
@@ -35,6 +49,9 @@ public class Player_Stats : MonoBehaviour
         healthBar.Initialize(maxHealth);
         oxygenBar.Initialize(maxOxygen);
         energyBar.Initialize(maxEnergy);
+
+        //initialize states
+        isOutside = true;
     }
         
     void Update()
@@ -44,8 +61,30 @@ public class Player_Stats : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= 1)
         {
-            //drain oxygen
-            Remove_Oxygen(1);
+            if (isOutside == true)
+            {//drain oxygen
+                Remove_Oxygen(oxygenDrain);
+            }
+            else
+            {//regen stats
+                Add_Health(healthRegen);
+                Add_Oxygen(oxygenRegen);
+                Add_Energy(energyRegen);
+            }
+            
+            //drain energy
+            if (playerMovement.IsFlying() == true)
+            {//flying
+                Remove_Energy(flyEnergy);
+            }
+            if (laser.IsMining() == true)
+            {//mining
+                Remove_Energy(mineEnergy);
+            }
+            if (laser.IsSucking() == true)
+            {//sucking
+                Remove_Energy(suckEnergy);
+            }
 
             //reset timer
             timer = 0;
@@ -94,6 +133,11 @@ public class Player_Stats : MonoBehaviour
         energyBar.Remove(amount);
     }
 
+    public int Get_Energy()
+    {
+        return energy;
+    }
+
     private void Sanitize()
     {//ensure values stay in range
 
@@ -126,5 +170,10 @@ public class Player_Stats : MonoBehaviour
         {
             energy = maxEnergy;
         }
+    }
+
+    public void IsOutside(bool value)
+    {//for oxygene drain togglling
+        isOutside = value;
     }
 }

@@ -5,16 +5,12 @@ using UnityEngine;
 
 public class Player_Inventory : MonoBehaviour
 {
-    //serialied fields
     [SerializeField] int maxMass;
 
-    //private variables
     private int mass;
     private TMP_Text massText;
-
     private int rock;
     private TMP_Text rockText;
-
     private int ice;
     private TMP_Text iceText;
 

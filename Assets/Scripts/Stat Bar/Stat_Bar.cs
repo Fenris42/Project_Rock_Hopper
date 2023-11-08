@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class Stat_Bar : MonoBehaviour
 {
-    //private variables
     private Slider fillSlider;
     private Slider changeSlider;
     private int current;

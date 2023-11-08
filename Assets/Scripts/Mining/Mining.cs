@@ -6,7 +6,6 @@ using UnityEngine.Tilemaps;
 
 public class Mining : MonoBehaviour
 {
-    //serialized fields
     [SerializeField] private float digTime;
     [SerializeField] Tile crack_1;
     [SerializeField] Tile crack_2;
@@ -19,7 +18,6 @@ public class Mining : MonoBehaviour
     [SerializeField] Tile crack_9;
     [SerializeField] Tile crack_10;
 
-    //private variables
     private Tilemap tilemap;
     private Tilemap crackTilemap;
     private float timer;

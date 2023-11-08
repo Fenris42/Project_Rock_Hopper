@@ -8,26 +8,30 @@ public class Player_Movement : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
     [SerializeField] float flySpeed;
+    [SerializeField] float jumpSpeed;
 
     private Animator animator;
     private Rigidbody2D rigidbody;
     private GameObject player;
-
+    private bool isFlying;
+    private bool isJumping;
+    private Player_Stats playerStats;
 
     
     void Start()
     {// Start is called before the first frame update
 
-        animator = transform.Find("Sprite").GetComponent<Animator>();
-        rigidbody = GetComponent<Rigidbody2D>();
         player = GameObject.Find("Player");
+        rigidbody = player.GetComponent<Rigidbody2D>();
+        animator = GameObject.Find("Player/Sprite").GetComponent<Animator>();
+        playerStats = player.GetComponent<Player_Stats>();
     }
-
-    
+        
     void Update()
     {// Update is called once per frame
 
         PlayerInput();
+
     }
 
     // Movement /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +41,7 @@ public class Player_Movement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space))
         {//jetpack movement
-            Jetpack(true);
+            Jetpack(true, false);
         }
 
         if (Input.GetKey(KeyCode.A))
@@ -84,43 +88,91 @@ public class Player_Movement : MonoBehaviour
 
     private void MoveLeft()
     {
-        animator.SetBool("Run", true);
+        if (isFlying == false && isJumping == false)
+        {
+            animator.SetBool("Run", true);
+        }
+        
         //player.transform.localScale = new Vector3(-1, 1, 1);
         player.transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
     }
 
     private void MoveRight()
     {
-        animator.SetBool("Run", true);
+        if (isFlying == false && isJumping == false)
+        {
+            animator.SetBool("Run", true);
+        }
+
         //player.transform.localScale = new Vector3(1, 1, 1);
         player.transform.position += (Vector3.right * moveSpeed) * Time.deltaTime;
     }
 
-    private void Jetpack(bool on)
+    private void Jetpack(bool on, bool gravity)
     {
-        if (on == true)
+        if (on == true && playerStats.Get_Energy() > 0)
         {//jetpack on
 
-         //resets downward gravity velocity to prevent stacking gravity while in flight
-            rigidbody.velocity = Vector3.zero;
-
+            if (gravity == false)
+            {//resets downward gravity velocity to prevent stacking gravity while in flight
+                rigidbody.velocity = Vector3.zero;
+            }
+            
             //fly
             animator.SetBool("Fly", true);
             player.transform.position += (Vector3.up * flySpeed) * Time.deltaTime;
+            isFlying = true;
+        }
+        else if (on == true && playerStats.Get_Energy() == 0 && isJumping == false)
+        {//jump if jetpack out of energy
+            Jump(true);
         }
         else
-        {//jetpack off
+        {//reset jetpack
             animator.SetBool("Fly", false);
+            isFlying = false;
         }
         
     }
 
+    private void Jump(bool on)
+    {
+        if (on == true)
+        {
+            animator.SetBool("Run", false);
+            animator.SetBool("Jump", true);
+            isJumping = true;
+            rigidbody.velocity += (Vector2.up * jumpSpeed);
+        }
+        else
+        {//reset jump
+            animator.SetBool("Jump", false);
+            isJumping = false;
+        }
+    }
+
+    // Utility /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public bool IsFlying()
+    {
+        return isFlying;
+    }
+
     // Collision Detection /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Ground")
         {//player is grounded
-            Jetpack(false);
+            Jetpack(false, true);
+            Jump(false);
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {//player is in air
+            Jetpack(true, true);
+            Jump(true);
         }
     }
 
