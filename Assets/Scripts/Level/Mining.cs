@@ -18,7 +18,8 @@ public class Mining : MonoBehaviour
     [SerializeField] Tile crack_9;
     [SerializeField] Tile crack_10;
 
-    private Tilemap tilemap;
+    private Tilemap groundTilemap;
+    private Tilemap oreTilemap;
     private Tilemap crackTilemap;
     private float timer;
     private List<Vector3Int> updateQueue = new List<Vector3Int>();
@@ -26,7 +27,8 @@ public class Mining : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        tilemap = GameObject.Find("Destructible Tiles").GetComponent<Tilemap>();
+        groundTilemap = GameObject.Find("Ground Tiles").GetComponent<Tilemap>();
+        oreTilemap = GameObject.Find("Ore Tiles").GetComponent<Tilemap>();
         crackTilemap = GameObject.Find("Crack Tiles").GetComponent<Tilemap>();
     }
 
@@ -48,7 +50,7 @@ public class Mining : MonoBehaviour
         Vector3 hitPos = Vector3.zero;
         hitPos.x = ray.point.x - 0.01f * ray.normal.x;
         hitPos.y = ray.point.y - 0.01f * ray.normal.y;
-        Vector3Int tilePos = tilemap.WorldToCell(hitPos);
+        Vector3Int tilePos = groundTilemap.WorldToCell(hitPos);
 
         //search update array to check if tile already set for update
         if (updateQueue.Contains(tilePos) == false)
@@ -64,7 +66,7 @@ public class Mining : MonoBehaviour
             foreach (Vector3Int tile in updateQueue)
             {
                 var crackInfo = crackTilemap.GetTile(tile);
-                var tileInfo = tilemap.GetTile(tile);
+                var tileInfo = groundTilemap.GetTile(tile);
 
                 if (tileInfo == null)
                 {
@@ -124,25 +126,41 @@ public class Mining : MonoBehaviour
     private void DropItem(Vector3Int tile)
     {
         //get tile info
-        var tileinfo = tilemap.GetTile(tile);
+        var tileinfo = groundTilemap.GetTile(tile);
+        var oreinfo = oreTilemap.GetTile(tile);
 
         //set instatiation position to be in center of tile
         Vector3 spawnPos = tile;
         spawnPos.x += 0.5f;
         spawnPos.y += 0.5f;
 
-        switch (tileinfo.name)
-        {
-            case "Regolith":
-                Instantiate(Resources.Load("Rock"), spawnPos, Quaternion.identity);
-                break;
-            case "Ice_Ore":
-                Instantiate(Resources.Load("Ice"), spawnPos, Quaternion.identity);
-                break;
-        }
+        //ground tiles
+        if (tileinfo != null && oreinfo == null)
+        {//drop only if there is no ore overlapping
 
-        //set tile to empty
+            switch (tileinfo.name)
+            {
+                case "Regolith":
+                    Instantiate(Resources.Load("Rock"), spawnPos, Quaternion.identity);
+                    break;
+            }
+        }
+        
+        //ore tiles
+        if (oreinfo != null)
+        {
+            switch (oreinfo.name)
+            {
+                case "Ice_Ore":
+                    Instantiate(Resources.Load("Ice"), spawnPos, Quaternion.identity);
+                    break;
+            }
+        }
+        
+        //set tile to empty on each layer
+        groundTilemap.SetTile(tile, null);
+        oreTilemap.SetTile(tile, null);
         crackTilemap.SetTile(tile, null);
-        tilemap.SetTile(tile, null);
+        
     }
 }

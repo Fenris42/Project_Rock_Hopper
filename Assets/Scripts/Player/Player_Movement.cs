@@ -14,7 +14,7 @@ public class Player_Movement : MonoBehaviour
     private Rigidbody2D rigidbody;
     private GameObject player;
     private bool isFlying;
-    private bool isJumping;
+    private bool isGrounded;
     private Player_Stats playerStats;
 
     
@@ -34,16 +34,12 @@ public class Player_Movement : MonoBehaviour
 
     }
 
-    // Movement /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void PlayerInput()
     {
+        //point player in direction of mouse
         Aim();
-
-        if (Input.GetKey(KeyCode.Space))
-        {//jetpack movement
-            Jetpack(true, false);
-        }
-
+        
+        //Movement
         if (Input.GetKey(KeyCode.A))
         {//left
             MoveLeft();
@@ -53,11 +49,29 @@ public class Player_Movement : MonoBehaviour
             MoveRight();
         }
         else
-        {
+        {//return to idle
             animator.SetBool("Run", false);
+        }
+
+        //Jump/Flight
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (isGrounded == true)
+            {//jump if grounded
+                Jump();
+            }
+            else if (isGrounded == false)
+            {//activate jetpack if in in the air
+                Jetpack(true);
+            }
+        }
+        else
+        {//reset jetpack
+            Jetpack(false);
         }
     }
 
+    // Movement /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Aim()
     {//point laser in direction of mouse
 
@@ -88,8 +102,8 @@ public class Player_Movement : MonoBehaviour
 
     private void MoveLeft()
     {
-        if (isFlying == false && isJumping == false)
-        {
+            if (isFlying == false && isGrounded == false)
+            {
             animator.SetBool("Run", true);
         }
         
@@ -99,7 +113,7 @@ public class Player_Movement : MonoBehaviour
 
     private void MoveRight()
     {
-        if (isFlying == false && isJumping == false)
+        if (isFlying == false && isGrounded == false)
         {
             animator.SetBool("Run", true);
         }
@@ -108,46 +122,31 @@ public class Player_Movement : MonoBehaviour
         player.transform.position += (Vector3.right * moveSpeed) * Time.deltaTime;
     }
 
-    private void Jetpack(bool on, bool gravity)
+    private void Jump()
+    {
+        animator.SetBool("Run", false);
+        animator.SetBool("Jump", true);
+        //isGrounded = true;
+        rigidbody.velocity += (Vector2.up * jumpSpeed);
+    }
+
+    private void Jetpack(bool on)
     {
         if (on == true && playerStats.Get_Energy() > 0)
         {//jetpack on
 
-            if (gravity == false)
-            {//resets downward gravity velocity to prevent stacking gravity while in flight
-                rigidbody.velocity = Vector3.zero;
-            }
-            
+            //resets downward gravity velocity to prevent stacking gravity while in flight
+            rigidbody.velocity = Vector3.zero;
+
             //fly
             animator.SetBool("Fly", true);
-            player.transform.position += (Vector3.up * flySpeed) * Time.deltaTime;
             isFlying = true;
-        }
-        else if (on == true && playerStats.Get_Energy() == 0 && isJumping == false)
-        {//jump if jetpack out of energy
-            Jump(true);
+            player.transform.position += (Vector3.up * flySpeed) * Time.deltaTime;
         }
         else
         {//reset jetpack
             animator.SetBool("Fly", false);
             isFlying = false;
-        }
-        
-    }
-
-    private void Jump(bool on)
-    {
-        if (on == true)
-        {
-            animator.SetBool("Run", false);
-            animator.SetBool("Jump", true);
-            isJumping = true;
-            rigidbody.velocity += (Vector2.up * jumpSpeed);
-        }
-        else
-        {//reset jump
-            animator.SetBool("Jump", false);
-            isJumping = false;
         }
     }
 
@@ -160,19 +159,18 @@ public class Player_Movement : MonoBehaviour
     // Collision Detection /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground")
+        if (collision.gameObject.CompareTag("Ground"))
         {//player is grounded
-            Jetpack(false, true);
-            Jump(false);
+            isGrounded = true;
+            animator.SetBool("Jump", false);
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground")
+        if (collision.gameObject.CompareTag("Ground"))
         {//player is in air
-            Jetpack(true, true);
-            Jump(true);
+            isGrounded = false;
         }
     }
 

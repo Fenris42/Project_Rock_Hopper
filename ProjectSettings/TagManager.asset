@@ -14,7 +14,7 @@ TagManager:
   - 
   - Water
   - UI
-  - Destructable
+  - Ground
   - Player
   - Loot
   - 
@@ -56,7 +56,7 @@ TagManager:
   - name: Loot
     uniqueID: 1153930329
     locked: 0
-  - name: Destructable Tiles
+  - name: Ground Tiles
     uniqueID: 1104946027
     locked: 0
   - name: UI

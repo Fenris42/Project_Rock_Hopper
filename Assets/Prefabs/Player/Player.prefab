@@ -271,7 +271,7 @@ MonoBehaviour:
   maxOxygen: 100
   oxygenRegen: 10
   oxygenDrain: 1
-  maxEnergy: 0
+  maxEnergy: 100
   energyRegen: 10
   flyEnergy: 5
   mineEnergy: 2
