@@ -7,15 +7,19 @@ using UnityEngine.Tilemaps;
 public class Player_Movement : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
-    [SerializeField] float flySpeed;
     [SerializeField] float jumpSpeed;
+    [SerializeField] float flySpeed;
+    [SerializeField] float flyEnergy;
 
     private Animator animator;
     private Rigidbody2D rigidbody;
     private GameObject player;
+    private Player_Stats playerStats;
+
     private bool isFlying;
     private bool isGrounded;
-    private Player_Stats playerStats;
+    private bool jetpackCooldown;
+    
 
     
     void Start()
@@ -31,7 +35,7 @@ public class Player_Movement : MonoBehaviour
     {// Update is called once per frame
 
         PlayerInput();
-
+        CheckVelocity();
     }
 
     private void PlayerInput()
@@ -102,9 +106,13 @@ public class Player_Movement : MonoBehaviour
 
     private void MoveLeft()
     {
-            if (isFlying == false && isGrounded == false)
-            {
+        if (isFlying == false && isGrounded == true)
+        {
             animator.SetBool("Run", true);
+        }
+        else
+        {
+            animator.SetBool("Run", false);
         }
         
         //player.transform.localScale = new Vector3(-1, 1, 1);
@@ -113,9 +121,13 @@ public class Player_Movement : MonoBehaviour
 
     private void MoveRight()
     {
-        if (isFlying == false && isGrounded == false)
+        if (isFlying == false && isGrounded == true)
         {
             animator.SetBool("Run", true);
+        }
+        else
+        {
+            animator.SetBool("Run", false);
         }
 
         //player.transform.localScale = new Vector3(1, 1, 1);
@@ -124,15 +136,16 @@ public class Player_Movement : MonoBehaviour
 
     private void Jump()
     {
-        animator.SetBool("Run", false);
-        animator.SetBool("Jump", true);
-        //isGrounded = true;
-        rigidbody.velocity += (Vector2.up * jumpSpeed);
+        rigidbody.velocity += (Vector2.up * jumpSpeed) * Time.deltaTime;
+
+        //prevents jump transitioning to flight instantly
+        jetpackCooldown = true;
+        Invoke("ResetJetpackCooldown", 0.5f);
     }
 
     private void Jetpack(bool on)
     {
-        if (on == true && playerStats.Get_Energy() > 0)
+        if (on == true && jetpackCooldown == false && playerStats.Get_Energy() > 0)
         {//jetpack on
 
             //resets downward gravity velocity to prevent stacking gravity while in flight
@@ -140,8 +153,10 @@ public class Player_Movement : MonoBehaviour
 
             //fly
             animator.SetBool("Fly", true);
-            isFlying = true;
             player.transform.position += (Vector3.up * flySpeed) * Time.deltaTime;
+
+            //drain energy
+            playerStats.Remove_Energy(flyEnergy * Time.deltaTime);
         }
         else
         {//reset jetpack
@@ -151,18 +166,46 @@ public class Player_Movement : MonoBehaviour
     }
 
     // Utility /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public bool IsFlying()
+    
+
+    private void ResetJetpackCooldown()
     {
-        return isFlying;
+        jetpackCooldown = false;
     }
 
-    // Collision Detection /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void CheckVelocity()
+    {//check if player is exceeding max velocity
+     //Note: if player jumped while standing on loot you will get yeeted into space
+
+        if (rigidbody.velocity.y > 2)
+        {
+            rigidbody.velocity = Vector3.zero;
+        }
+    }
+
+    // Ground Check /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //TO DO
+    //Do ground check on if feet are touching ground only. Currently touching any ground in any direction is causing jump/fly resets incorrectly
+    //Make room for edge case of player is standing on loot
+    private void IsGrounded(bool grounded)
+    {
+        if (grounded == false)
+        {
+            animator.SetBool("Jump", true);
+            isGrounded = false;
+        }
+        else
+        {
+            animator.SetBool("Jump", false);
+            isGrounded = true;
+        }
+    }
+
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {//player is grounded
-            isGrounded = true;
-            animator.SetBool("Jump", false);
+            IsGrounded(true);
         }
     }
 
@@ -170,7 +213,7 @@ public class Player_Movement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {//player is in air
-            isGrounded = false;
+            IsGrounded(false);
         }
     }
 

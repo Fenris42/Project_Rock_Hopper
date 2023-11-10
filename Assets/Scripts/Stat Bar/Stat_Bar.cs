@@ -7,8 +7,8 @@ public class Stat_Bar : MonoBehaviour
 {
     private Slider fillSlider;
     private Slider changeSlider;
-    private int current;
-    private int max;
+    private float current;
+    private float max;
 
 
 
@@ -23,13 +23,13 @@ public class Stat_Bar : MonoBehaviour
 
     }
 
-    public void Initialize(int amount)
+    public void Initialize(float amount)
     {//initialize bars current value
         current = amount;
         max = amount;
     }
 
-    public void Add(int amount)
+    public void Add(float amount)
     {//increase stat bar and play animation
 
         //add amount from bar
@@ -46,7 +46,7 @@ public class Stat_Bar : MonoBehaviour
 
     }
 
-    public void Remove(int amount)
+    public void Remove(float amount)
     {//reduce stat bar and play animation
 
         //remove amount from bar
@@ -79,7 +79,7 @@ public class Stat_Bar : MonoBehaviour
     {//set slider to percentage of current and max values
 
         //get bar fill ratio
-        float percentage = (float)current / (float)max;
+        float percentage = current / max;
 
         //scale health bar fill
         fillSlider.value = percentage;
@@ -90,7 +90,7 @@ public class Stat_Bar : MonoBehaviour
     {//set slider to percentage of current and max values
 
         //get bar fill ratio
-        float percentage = (float)current / (float)max;
+        float percentage = current / max;
 
         //scale health bar fill
         changeSlider.value = percentage;

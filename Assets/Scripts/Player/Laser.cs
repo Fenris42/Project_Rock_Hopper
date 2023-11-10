@@ -10,6 +10,8 @@ using static UnityEngine.GraphicsBuffer;
 public class Laser : MonoBehaviour
 {
     [SerializeField] float range;
+    [SerializeField] float mineEnergy;
+    [SerializeField] float suckEnergy;
     [SerializeField] LayerMask fireMask;
     [SerializeField] LayerMask pickupMask;
 
@@ -18,8 +20,6 @@ public class Laser : MonoBehaviour
     private SpriteRenderer laserSprite;
     private Player_Inventory playerInventory;
     private Mining mining;
-    private bool isMining;
-    private bool isSucking;
     private Player_Stats playerStats;
     
 
@@ -32,16 +32,17 @@ public class Laser : MonoBehaviour
         player = GameObject.Find("Player");
         playerInventory = player.GetComponent<Player_Inventory>();
         laserSprite = GameObject.Find("Player/Laser").GetComponent<SpriteRenderer>();
-        laserSprite.enabled = false;
         mining = GameObject.Find("Level").GetComponent<Mining>();
         playerStats = player.GetComponent <Player_Stats>();
+
+        //initialize states
+        laserSprite.enabled = false;
     }
         
     void Update()
     {// Update is called once per frame
 
         PlayerInput();
-
     }
 
     private void PlayerInput()
@@ -61,6 +62,73 @@ public class Laser : MonoBehaviour
         }
     }
 
+    private void Fire(bool fire)
+    {//fire laser and check for contacts
+
+        if (fire == true && playerStats.Get_Energy() > 0)
+        {//fire laser
+
+            //enable mining animation
+            laserSprite.enabled = true;
+            laserSprite.color = Color.white;
+            animator.SetBool("Fire", true);
+
+            //drain energy
+            playerStats.Remove_Energy(mineEnergy * Time.deltaTime);
+
+            //fire ray to detect interactable objects
+            RaycastHit2D ray = Ray(fireMask);
+
+            if (ray.collider == true)
+            {//ray has a hit return
+
+                if (ray.collider.gameObject.CompareTag("Ground"))
+                {//hit is minable
+                    mining.Mine(ray);      
+                }
+            }
+        }
+        else
+        {//reset laser
+            animator.SetBool("Fire", false);
+            laserSprite.enabled = false;
+        }
+    }
+
+    private void Suck(bool suck)
+    {//suck up drops
+
+        if (suck == true && playerStats.Get_Energy() > 0)
+        {
+            //enable sucking animation
+            laserSprite.enabled = true;
+            laserSprite.color = Color.green;
+            animator.SetBool("Suck", true);
+
+            //drain energy
+            playerStats.Remove_Energy(suckEnergy * Time.deltaTime);
+
+            //fire ray to detect interactable objects
+            RaycastHit2D ray = Ray(pickupMask);
+
+            if (ray.collider == true)
+            {//ray has a hit return
+
+                //convert ray to game object
+                GameObject item = ray.collider.gameObject;
+
+                //pickup item
+                playerInventory.Pickup(item);
+            }
+        }
+        else
+        {//reset laser
+            animator.SetBool("Suck", false);
+            laserSprite.enabled = false;
+        }
+    }
+
+    //Utility Methods //////////////////////////////////////////////////////////////////////////////////////////////////
     private RaycastHit2D Ray(LayerMask layermask)
     {
         //convert players rotation into a vector2 for raycast
@@ -81,80 +149,6 @@ public class Laser : MonoBehaviour
         ray = Physics2D.Raycast(player.transform.position, direction, range, layermask);
 
         return ray;
-    }
-
-    private void Fire(bool fire)
-    {//fire laser and check for contacts
-
-        if (fire == true && playerStats.Get_Energy() > 0)
-        {//fire laser
-
-            //enable mining animation
-            laserSprite.enabled = true;
-            laserSprite.color = Color.white;
-            animator.SetBool("Fire", true);
-            isMining = true;
-
-            //fire ray to detect interactable objects
-            RaycastHit2D ray = Ray(fireMask);
-
-            if (ray.collider == true)
-            {//ray has a hit return
-
-                if (ray.collider.gameObject.CompareTag("Ground"))
-                {//hit is minable
-                    mining.Mine(ray);      
-                }
-            }
-        }
-        else
-        {//reset laser
-            animator.SetBool("Fire", false);
-            laserSprite.enabled = false;
-            isMining = false;
-        }
-    }
-
-    private void Suck(bool suck)
-    {//suck up drops
-
-        if (suck == true && playerStats.Get_Energy() > 0)
-        {
-            //enable sucking animation
-            laserSprite.enabled = true;
-            laserSprite.color = Color.green;
-            animator.SetBool("Suck", true);
-            isSucking = true;
-
-            //fire ray to detect interactable objects
-            RaycastHit2D ray = Ray(pickupMask);
-
-            if (ray.collider == true)
-            {//ray has a hit return
-
-                //convert ray to game object
-                GameObject item = ray.collider.gameObject;
-
-                //pickup item
-                playerInventory.Pickup(item);
-            }
-        }
-        else
-        {//reset laser
-            animator.SetBool("Suck", false);
-            laserSprite.enabled = false;
-            isSucking = false;
-        }
-    }
-
-    public bool IsMining()
-    {
-        return isMining;
-    }
-
-    public bool IsSucking()
-    {
-        return isSucking;
     }
 
     private void OnDrawGizmosSelected()
