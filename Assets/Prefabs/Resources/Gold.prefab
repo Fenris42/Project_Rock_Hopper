@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 1153930329
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 387e60a4d71790344b00093c6f255dbe, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 484750849caa9b345bd6b09a42dff288, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -96,8 +96,8 @@ GameObject:
   - component: {fileID: 1105350765124499357}
   - component: {fileID: 6454244578518230699}
   m_Layer: 8
-  m_Name: Rock
-  m_TagString: Rock
+  m_Name: Gold
+  m_TagString: Gold
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -177,6 +177,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.008701421, y: -0.06625236}
-  m_Size: {x: 0.21476214, y: 0.2264282}
-  m_Direction: 0
+  m_Offset: {x: -0.012392854, y: -0.038258273}
+  m_Size: {x: 0.35611656, y: 0.26095286}
+  m_Direction: 1

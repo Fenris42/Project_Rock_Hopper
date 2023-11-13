@@ -5,8 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
-  - Ice_Ore
   - Rock
+  - Ice
+  - Copper
+  - Gold
+  - Iron
+  - Titanium
   layers:
   - Default
   - TransparentFX

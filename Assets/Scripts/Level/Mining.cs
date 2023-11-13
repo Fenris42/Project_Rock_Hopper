@@ -154,6 +154,18 @@ public class Mining : MonoBehaviour
                 case "Ice_Ore":
                     Instantiate(Resources.Load("Ice"), spawnPos, Quaternion.identity);
                     break;
+                case "Iron_Ore":
+                    Instantiate(Resources.Load("Iron"), spawnPos, Quaternion.identity);
+                    break;
+                case "Copper_Ore":
+                    Instantiate(Resources.Load("Copper"), spawnPos, Quaternion.identity);
+                    break;
+                case "Gold_Ore":
+                    Instantiate(Resources.Load("Gold"), spawnPos, Quaternion.identity);
+                    break;
+                case "Titanium_Ore":
+                    Instantiate(Resources.Load("Titanium"), spawnPos, Quaternion.identity);
+                    break;
             }
         }
         
