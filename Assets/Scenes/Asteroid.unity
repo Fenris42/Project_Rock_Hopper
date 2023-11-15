@@ -1066,6 +1066,22 @@ MonoBehaviour:
   iceUpperSpawnLayer: 1
   iceLowerSpawnLayer: 2
   iceOrePercent: 50
+  ironOre: {fileID: 11400000, guid: 00fdd59f12913094dbcb2be78b80cb2e, type: 2}
+  ironUpperSpawnLayer: 3
+  ironLowerSpawnLayer: 10
+  ironOrePercent: 20
+  copperOre: {fileID: 11400000, guid: eb31e38db75baa843ac633c4a87c51f4, type: 2}
+  copperUpperSpawnLayer: 5
+  copperLowerSpawnLayer: 10
+  copperOrePercent: 10
+  goldOre: {fileID: 11400000, guid: 5869acabbfa14ae4b8be0c02ac89b883, type: 2}
+  goldUpperSpawnLayer: 7
+  goldLowerSpawnLayer: 10
+  goldOrePercent: 5
+  titaniumOre: {fileID: 11400000, guid: 868460cbe32407545bff8b259bed16c5, type: 2}
+  titaniumUpperSpawnLayer: 9
+  titaniumLowerSpawnLayer: 10
+  titaniumOrePercent: 1
 --- !u!1001 &1660368215
 PrefabInstance:
   m_ObjectHideFlags: 0

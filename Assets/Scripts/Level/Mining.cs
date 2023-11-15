@@ -69,52 +69,55 @@ public class Mining : MonoBehaviour
                 var tileInfo = groundTilemap.GetTile(tile);
 
                 if (tileInfo == null)
-                {
+                {//fix for crack rolling over to crack 1 after breaking for some reason
                     crackTilemap.SetTile(tile, null);
                 }
-                else if (crackInfo == null)
+                else if (tileInfo.name != "Bedrock")
                 {
-                    crackTilemap.SetTile(tile, crack_1);
-                }
-                else if (crackInfo.name == "Crack_1")
-                {
-                    crackTilemap.SetTile(tile, crack_2);
-                }
-                else if (crackInfo.name == "Crack_2")
-                {
-                    crackTilemap.SetTile(tile, crack_3);
-                }
-                else if (crackInfo.name == "Crack_3")
-                {
-                    crackTilemap.SetTile(tile, crack_4);
-                }
-                else if (crackInfo.name == "Crack_4")
-                {
-                    crackTilemap.SetTile(tile, crack_5);
-                }
-                else if (crackInfo.name == "Crack_5")
-                {
-                    crackTilemap.SetTile(tile, crack_6);
-                }
-                else if (crackInfo.name == "Crack_6")
-                {
-                    crackTilemap.SetTile(tile, crack_7);
-                }
-                else if (crackInfo.name == "Crack_7")
-                {
-                    crackTilemap.SetTile(tile, crack_8);
-                }
-                else if (crackInfo.name == "Crack_8")
-                {
-                    crackTilemap.SetTile(tile, crack_9);
-                }
-                else if (crackInfo.name == "Crack_9")
-                {
-                    crackTilemap.SetTile(tile, crack_10);
-                }
-                else if (crackInfo.name == "Crack_10")
-                {
-                    DropItem(tile);
+                    if (crackInfo == null)
+                    {
+                        crackTilemap.SetTile(tile, crack_1);
+                    }
+                    else if (crackInfo.name == "Crack_1")
+                    {
+                        crackTilemap.SetTile(tile, crack_2);
+                    }
+                    else if (crackInfo.name == "Crack_2")
+                    {
+                        crackTilemap.SetTile(tile, crack_3);
+                    }
+                    else if (crackInfo.name == "Crack_3")
+                    {
+                        crackTilemap.SetTile(tile, crack_4);
+                    }
+                    else if (crackInfo.name == "Crack_4")
+                    {
+                        crackTilemap.SetTile(tile, crack_5);
+                    }
+                    else if (crackInfo.name == "Crack_5")
+                    {
+                        crackTilemap.SetTile(tile, crack_6);
+                    }
+                    else if (crackInfo.name == "Crack_6")
+                    {
+                        crackTilemap.SetTile(tile, crack_7);
+                    }
+                    else if (crackInfo.name == "Crack_7")
+                    {
+                        crackTilemap.SetTile(tile, crack_8);
+                    }
+                    else if (crackInfo.name == "Crack_8")
+                    {
+                        crackTilemap.SetTile(tile, crack_9);
+                    }
+                    else if (crackInfo.name == "Crack_9")
+                    {
+                        crackTilemap.SetTile(tile, crack_10);
+                    }
+                    else if (crackInfo.name == "Crack_10")
+                    {
+                        DropItem(tile);
+                    }
                 }
             }
         }
@@ -142,38 +145,43 @@ public class Mining : MonoBehaviour
             {
                 case "Regolith":
                     Instantiate(Resources.Load("Rock"), spawnPos, Quaternion.identity);
+                    groundTilemap.SetTile(tile, null);
                     break;
             }
         }
-        
-        //ore tiles
-        if (oreinfo != null)
-        {
+        else if (tileinfo != null && oreinfo != null)
+        {//ore tiles
             switch (oreinfo.name)
             {
                 case "Ice_Ore":
                     Instantiate(Resources.Load("Ice"), spawnPos, Quaternion.identity);
+                    oreTilemap.SetTile(tile, null);
+                    groundTilemap.SetTile(tile, null);
                     break;
                 case "Iron_Ore":
                     Instantiate(Resources.Load("Iron"), spawnPos, Quaternion.identity);
+                    oreTilemap.SetTile(tile, null);
+                    groundTilemap.SetTile(tile, null);
                     break;
                 case "Copper_Ore":
                     Instantiate(Resources.Load("Copper"), spawnPos, Quaternion.identity);
+                    oreTilemap.SetTile(tile, null);
+                    groundTilemap.SetTile(tile, null);
                     break;
                 case "Gold_Ore":
                     Instantiate(Resources.Load("Gold"), spawnPos, Quaternion.identity);
+                    oreTilemap.SetTile(tile, null);
+                    groundTilemap.SetTile(tile, null);
                     break;
                 case "Titanium_Ore":
                     Instantiate(Resources.Load("Titanium"), spawnPos, Quaternion.identity);
+                    oreTilemap.SetTile(tile, null);
+                    groundTilemap.SetTile(tile, null);
                     break;
             }
         }
-
-        //Debug.Log(tile.ToString());
-
-        //set tile to empty on each layer
-        groundTilemap.SetTile(tile, null);
-        oreTilemap.SetTile(tile, null);
+      
+        //reset cracks
         crackTilemap.SetTile(tile, null);
         
     }
