@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -13,6 +14,10 @@ public class Generation : MonoBehaviour
     [Header("Background")]
     [SerializeField] private Tile space;
     [SerializeField] private Tile background;
+    [Header("FOW")]
+    [SerializeField] private Tile fowFull;
+    [SerializeField] private Tile fowSemi;
+    [SerializeField] private int fowUpperSpawnLayer;
     [Header("Ground")]
     [SerializeField] private Tile regolith;
     [SerializeField] private Tile bedrock;
@@ -74,7 +79,7 @@ public class Generation : MonoBehaviour
         Vector3Int tile = new Vector3Int(0, 0, 0);
         //int random = 0;
 
-        //space tile generation
+        //space generation
         for (int y = (spaceHeight - 1); y >= 0; y--)
         {//y top to bottom
 
@@ -87,7 +92,7 @@ public class Generation : MonoBehaviour
             }
         }
 
-        //background generation
+        //ground generation
         for (int y = -1; y >= (-groundHeight); y--)
         {//y top to bottom
 
@@ -97,24 +102,12 @@ public class Generation : MonoBehaviour
                 //set tile
                 tile = new Vector3Int(x, y, 0);
                 backgroundTilemap.SetTile(tile, background);
-            }
-        }
-
-        //regolith generation
-        for (int y = -1; y >= (-groundHeight); y--)
-        {//y top to bottom
-
-            for (int x = (-groundWidth / 2); x < (groundWidth / 2); x++)
-            {//x left to right
-
-                //set tile
-                tile = new Vector3Int(x, y, 0);
                 groundTilemap.SetTile(tile, regolith);
             }
         }
 
         //bedrock generation
-        //Add 5 layers of bedrock to bottom of map
+        //Add 5 layers of bedrock to bottom of map to obscure camera
         for (int y = (-groundHeight - 1); y >= (-groundHeight - 5); y--)
         {//y top to bottom
 
@@ -142,6 +135,26 @@ public class Generation : MonoBehaviour
         //titanium ore
         GenerateOre(titaniumUpperSpawnLayer, titaniumLowerSpawnLayer, titaniumOrePercent, titaniumOre);
 
+        //FOW Semi generation
+        for (int x = (-groundWidth / 2); x < (groundWidth / 2); x++)
+        {//x left to right
+
+            //set tile
+            tile = new Vector3Int(x, -fowUpperSpawnLayer, 0);
+            fowTilemap.SetTile(tile, fowSemi);
+        }
+
+        for (int y = (-fowUpperSpawnLayer - 1); y >= (-groundHeight - 5); y--)
+        {//y top to bottom
+
+            for (int x = (-groundWidth / 2); x < (groundWidth / 2); x++)
+            {//x left to right
+
+                //set tile
+                tile = new Vector3Int(x, y, 0);
+                fowTilemap.SetTile(tile, fowFull);
+            }
+        }
     }
 
     private void GenerateOre(int upperSpawnLayer, int lowerSpawnLayer, int orePercent, Tile oreTile)

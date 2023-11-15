@@ -183,6 +183,5 @@ public class Mining : MonoBehaviour
       
         //reset cracks
         crackTilemap.SetTile(tile, null);
-        
     }
 }

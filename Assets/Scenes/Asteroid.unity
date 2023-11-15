@@ -997,6 +997,7 @@ GameObject:
   - component: {fileID: 1649952413}
   - component: {fileID: 1649952414}
   - component: {fileID: 1649952415}
+  - component: {fileID: 1649952416}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -1060,6 +1061,9 @@ MonoBehaviour:
   groundHeight: 10
   space: {fileID: 11400000, guid: d8704acf2c21dfc4aadaef6bf8a4866a, type: 2}
   background: {fileID: 11400000, guid: 4a97d5a0afa32124aa12f63729e22bc9, type: 2}
+  fowFull: {fileID: 11400000, guid: 06592bca5c6658a47b7099ff21722153, type: 2}
+  fowSemi: {fileID: 11400000, guid: 3ce20b0fba88843419b4ce39e6b59a36, type: 2}
+  fowUpperSpawnLayer: 3
   regolith: {fileID: 11400000, guid: 39cce3a73e1420a4fa2d33c6e3a5053f, type: 2}
   bedrock: {fileID: 11400000, guid: b10ea0cdb90626f4e822fa88baa69521, type: 2}
   iceOre: {fileID: 11400000, guid: fa7168529d3a0d040ba73fdace0f41b2, type: 2}
@@ -1077,11 +1081,24 @@ MonoBehaviour:
   goldOre: {fileID: 11400000, guid: 5869acabbfa14ae4b8be0c02ac89b883, type: 2}
   goldUpperSpawnLayer: 7
   goldLowerSpawnLayer: 10
-  goldOrePercent: 5
+  goldOrePercent: 10
   titaniumOre: {fileID: 11400000, guid: 868460cbe32407545bff8b259bed16c5, type: 2}
   titaniumUpperSpawnLayer: 9
   titaniumLowerSpawnLayer: 10
-  titaniumOrePercent: 1
+  titaniumOrePercent: 5
+--- !u!114 &1649952416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1649952412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 650c12ce5e6897c4286998264ca30f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fowSemi: {fileID: 11400000, guid: 3ce20b0fba88843419b4ce39e6b59a36, type: 2}
 --- !u!1001 &1660368215
 PrefabInstance:
   m_ObjectHideFlags: 0
