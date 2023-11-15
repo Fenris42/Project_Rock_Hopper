@@ -63,6 +63,9 @@ TagManager:
   - name: Ground Tiles
     uniqueID: 1104946027
     locked: 0
+  - name: FOW
+    uniqueID: 2114570119
+    locked: 0
   - name: UI
     uniqueID: 2290066631
     locked: 0

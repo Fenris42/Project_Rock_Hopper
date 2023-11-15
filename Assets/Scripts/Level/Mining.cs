@@ -168,7 +168,9 @@ public class Mining : MonoBehaviour
                     break;
             }
         }
-        
+
+        //Debug.Log(tile.ToString());
+
         //set tile to empty on each layer
         groundTilemap.SetTile(tile, null);
         oreTilemap.SetTile(tile, null);
