@@ -1063,7 +1063,7 @@ MonoBehaviour:
   background: {fileID: 11400000, guid: 4a97d5a0afa32124aa12f63729e22bc9, type: 2}
   fowFull: {fileID: 11400000, guid: 06592bca5c6658a47b7099ff21722153, type: 2}
   fowSemi: {fileID: 11400000, guid: 3ce20b0fba88843419b4ce39e6b59a36, type: 2}
-  fowUpperSpawnLayer: 3
+  fowUpperSpawnLayer: 2
   regolith: {fileID: 11400000, guid: 39cce3a73e1420a4fa2d33c6e3a5053f, type: 2}
   bedrock: {fileID: 11400000, guid: b10ea0cdb90626f4e822fa88baa69521, type: 2}
   iceOre: {fileID: 11400000, guid: fa7168529d3a0d040ba73fdace0f41b2, type: 2}

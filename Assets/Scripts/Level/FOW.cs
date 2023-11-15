@@ -39,22 +39,18 @@ public class FOW : MonoBehaviour
             {//x left to right
 
                 Vector3Int tile = new Vector3Int(x + xi, y + yi, 0);
-                var tileinfo = fowTilemap.GetTile(tile);
 
-                if (tileinfo != null)
-                {
-                    if (xi == -2 || xi == 2 || yi == -2 || yi == 2)
-                    {//outside edge of 5x5 to be semi transparent
+                if (xi == -2 || xi == 2 || yi == -2 || yi == 2)
+                {//outside edge of 5x5 to be semi transparent
 
-                        if (tileinfo.name == "FOW Full")
-                        {//if fully obscured set to semi obscured
-                            fowTilemap.SetTile(tile, fowSemi);
-                        }
+                    if (y + yi < -1)
+                    {//return tile to semi transparent if moved away and at least layer 2 below surface
+                        fowTilemap.SetTile(tile, fowSemi);
                     }
-                    else
-                    {//inside 3x3 area to be fully transparent
-                        fowTilemap.SetTile(tile, null);
-                    }
+                }
+                else
+                {//inside 3x3 area to be fully transparent around player
+                    fowTilemap.SetTile(tile, null);
                 }
             }
         }
