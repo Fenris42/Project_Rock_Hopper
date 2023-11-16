@@ -9,8 +9,9 @@ public class Generation : MonoBehaviour
 {
     [Header("Dimensions")]
     [SerializeField] private int spaceHeight;
-    [SerializeField] private int groundWidth;
     [SerializeField] private int groundHeight;
+    [SerializeField] private int groundWidth;
+    [SerializeField] private int bufferLayers; //extra tiles around regular spawning the obscure cameras view of the void
     [Header("Background")]
     [SerializeField] private Tile space;
     [SerializeField] private Tile background;
@@ -52,7 +53,13 @@ public class Generation : MonoBehaviour
     private Tilemap groundTilemap;
     private Tilemap oreTilemap;
     private Tilemap fowTilemap;
-    
+
+    //boundaries
+    private GameObject topBoundary;
+    private GameObject bottomBoundary;
+    private GameObject leftBoundary;
+    private GameObject rightBoundary;
+
 
     
     void Start()
@@ -63,27 +70,33 @@ public class Generation : MonoBehaviour
         groundTilemap = GameObject.Find("Level/Grid/Ground Tiles").GetComponent<Tilemap>();
         oreTilemap = GameObject.Find("Level/Grid/Ore Tiles").GetComponent<Tilemap>();
         fowTilemap = GameObject.Find("Level/Grid/FOW Tiles").GetComponent<Tilemap>();
+        topBoundary = GameObject.Find("Level/Boundary/Top");
+        bottomBoundary = GameObject.Find("Level/Boundary/Bottom");
+        leftBoundary = GameObject.Find("Level/Boundary/Left");
+        rightBoundary = GameObject.Find("Level/Boundary/Right");
 
         //generate level
         Generate();
     }
 
+    /*
     void Update()
     {// Update is called once per frame
 
     }
+    */
 
     private void Generate()
     {//generate level
 
         Vector3Int tile = new Vector3Int(0, 0, 0);
-        //int random = 0;
+
 
         //space generation
-        for (int y = (spaceHeight - 1); y >= 0; y--)
+        for (int y = ((spaceHeight - 1) + bufferLayers); y >= 0; y--)
         {//y top to bottom
 
-            for (int x = (-groundWidth / 2); x < (groundWidth / 2); x++)
+            for (int x = ((-groundWidth / 2) - bufferLayers); x < ((groundWidth / 2) + bufferLayers); x++)
             {//x left to right
 
                 //set tile
@@ -92,11 +105,12 @@ public class Generation : MonoBehaviour
             }
         }
 
+
         //ground generation
         for (int y = -1; y >= (-groundHeight); y--)
         {//y top to bottom
 
-            for (int x = (-groundWidth / 2); x < (groundWidth / 2); x++)
+            for (int x = ((-groundWidth / 2) - bufferLayers); x < ((groundWidth / 2) + bufferLayers); x++)
             {//x left to right
 
                 //set tile
@@ -106,12 +120,12 @@ public class Generation : MonoBehaviour
             }
         }
 
+
         //bedrock generation
-        //Add 5 layers of bedrock to bottom of map to obscure camera
-        for (int y = (-groundHeight - 1); y >= (-groundHeight - 5); y--)
+        for (int y = (-groundHeight - 1); y >= (-groundHeight - bufferLayers); y--)
         {//y top to bottom
 
-            for (int x = (-groundWidth / 2); x < (groundWidth / 2); x++)
+            for (int x = ((-groundWidth / 2) - bufferLayers); x < ((groundWidth / 2) + bufferLayers); x++)
             {//x left to right
 
                 //set tile
@@ -120,6 +134,8 @@ public class Generation : MonoBehaviour
             }
         }
 
+
+        //Ore Generation
         //ice ore
         GenerateOre(iceUpperSpawnLayer, iceLowerSpawnLayer, iceOrePercent, iceOre);
 
@@ -135,8 +151,9 @@ public class Generation : MonoBehaviour
         //titanium ore
         GenerateOre(titaniumUpperSpawnLayer, titaniumLowerSpawnLayer, titaniumOrePercent, titaniumOre);
 
-        //FOW Semi generation
-        for (int x = (-groundWidth / 2); x < (groundWidth / 2); x++)
+
+        //FOW Semi generation (top layer only)
+        for (int x = ((-groundWidth / 2) - bufferLayers); x < ((groundWidth / 2) + bufferLayers); x++)
         {//x left to right
 
             //set tile
@@ -144,10 +161,11 @@ public class Generation : MonoBehaviour
             fowTilemap.SetTile(tile, fowSemi);
         }
 
-        for (int y = (-fowUpperSpawnLayer - 1); y >= (-groundHeight - 5); y--)
+        //FOW Full generation
+        for (int y = (-fowUpperSpawnLayer - 1); y >= (-groundHeight - bufferLayers); y--)
         {//y top to bottom
 
-            for (int x = (-groundWidth / 2); x < (groundWidth / 2); x++)
+            for (int x = ((-groundWidth / 2) - bufferLayers); x < ((groundWidth / 2) + bufferLayers); x++)
             {//x left to right
 
                 //set tile
@@ -155,6 +173,38 @@ public class Generation : MonoBehaviour
                 fowTilemap.SetTile(tile, fowFull);
             }
         }
+
+
+        //boundary generation
+        topBoundary.transform.position = new Vector3(0, spaceHeight + 0.05f, 0);
+        topBoundary.GetComponent<BoxCollider2D>().size = new Vector2(groundWidth, 0.1f);
+
+        bottomBoundary.transform.position = new Vector3(0, (-groundHeight - 0.05f), 0);
+        bottomBoundary.GetComponent<BoxCollider2D>().size = new Vector2(groundWidth, 0.1f);
+
+        //find center of the maps height for left/right boundaries
+        int mapHeight = spaceHeight + groundHeight;
+        int heightCenter = 0;
+
+        if (groundHeight == spaceHeight)
+        {
+            heightCenter = 0;
+        }
+        else if (groundHeight > spaceHeight)
+        {
+            heightCenter = -((mapHeight / 2) - spaceHeight);
+        }
+        else if (spaceHeight > groundHeight)
+        {
+            heightCenter = ((mapHeight / 2) - groundHeight);
+        }
+
+        leftBoundary.transform.position = new Vector3(((-groundWidth / 2) - 0.05f), heightCenter, 0);
+        leftBoundary.GetComponent<BoxCollider2D>().size = new Vector2(0.1f, mapHeight);
+
+        rightBoundary.transform.position = new Vector3(((groundWidth / 2) + 0.05f), heightCenter, 0);
+        rightBoundary.GetComponent<BoxCollider2D>().size = new Vector2(0.1f, mapHeight);
+
     }
 
     private void GenerateOre(int upperSpawnLayer, int lowerSpawnLayer, int orePercent, Tile oreTile)
@@ -180,5 +230,10 @@ public class Generation : MonoBehaviour
                 }
             }
         }
+    }
+
+    public int GetGroundWidth()
+    {
+        return groundWidth;
     }
 }

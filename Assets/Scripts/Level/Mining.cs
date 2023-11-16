@@ -23,24 +23,32 @@ public class Mining : MonoBehaviour
     private Tilemap crackTilemap;
     private float timer;
     private List<Vector3Int> updateQueue = new List<Vector3Int>();
+    private Generation generation;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        //get components
         groundTilemap = GameObject.Find("Ground Tiles").GetComponent<Tilemap>();
         oreTilemap = GameObject.Find("Ore Tiles").GetComponent<Tilemap>();
         crackTilemap = GameObject.Find("Crack Tiles").GetComponent<Tilemap>();
+        generation = GameObject.Find("Level").GetComponent<Generation>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //convert frame rate to seconds
-        timer += Time.deltaTime;
-        if (timer >= (digTime / 10))
-        {
-            UpdateTiles();
-            timer = 0;
+        if (updateQueue.Count > 0)
+        {//process only if there are tile updates
+
+            //convert frame rate to seconds
+            timer += Time.deltaTime;
+            if (timer >= (digTime / 10))
+            {
+                UpdateTiles();
+                timer = 0;
+            }
         }
     }
 
@@ -52,10 +60,17 @@ public class Mining : MonoBehaviour
         hitPos.y = ray.point.y - 0.01f * ray.normal.y;
         Vector3Int tilePos = groundTilemap.WorldToCell(hitPos);
 
-        //search update array to check if tile already set for update
-        if (updateQueue.Contains(tilePos) == false)
-        {
-            updateQueue.Add(tilePos);
+        //get world parameters
+        int maxTile = (generation.GetGroundWidth() / 2);
+
+        if (tilePos.x < maxTile && tilePos.x >= -maxTile)
+        {//only mine if inside world boundaries
+
+            //search update array to check if tile already set for update
+            if (updateQueue.Contains(tilePos) == false)
+            {
+                updateQueue.Add(tilePos);
+            }
         }
     }
 
@@ -73,7 +88,8 @@ public class Mining : MonoBehaviour
                     crackTilemap.SetTile(tile, null);
                 }
                 else if (tileInfo.name != "Bedrock")
-                {
+                {//ignore bedrock tiles on the ground layer
+
                     if (crackInfo == null)
                     {
                         crackTilemap.SetTile(tile, crack_1);
