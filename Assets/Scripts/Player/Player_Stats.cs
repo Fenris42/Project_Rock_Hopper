@@ -14,6 +14,7 @@ public class Player_Stats : MonoBehaviour
     [SerializeField] private float maxOxygen;
     [SerializeField] private float oxygenRegen;
     [SerializeField] private float oxygenDrain;
+    [SerializeField] private float noOxygenHealthDrain;
     [Header("Energy")]
     [SerializeField] private float maxEnergy;
     [SerializeField] private float energyRegen;
@@ -28,8 +29,9 @@ public class Player_Stats : MonoBehaviour
     private float health;
     private float oxygen;
     private float energy;
-    private bool isOutside;
 
+    private GameState gameState;
+    private bool eva;
     private float timer;
     private bool warning;
 
@@ -44,6 +46,7 @@ public class Player_Stats : MonoBehaviour
         healthWarning = GameObject.Find("HUD/Canvas/Health Bar/Warning").GetComponent<Image>();
         oxygenWarning = GameObject.Find("HUD/Canvas/Oxygen Bar/Warning").GetComponent<Image>();
         energyWarning = GameObject.Find("HUD/Canvas/Energy Bar/Warning").GetComponent<Image>();
+        gameState = GameObject.Find("Game State").GetComponent<GameState>();
 
         //initialize stats and bars
         health = maxHealth;
@@ -57,7 +60,7 @@ public class Player_Stats : MonoBehaviour
         energyWarning.enabled = false;
                 
         //initialize states
-        isOutside = true;
+        eva = true;
     }
         
     void Update()
@@ -67,24 +70,59 @@ public class Player_Stats : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= 1)
         {
+            //update stats
+            Stats();
+
+            //check stats for warnings
             Warnings();
-
-            if (isOutside == true)
-            {//drain oxygen
-                Remove_Oxygen(oxygenDrain);
-            }
-            else
-            {//regen stats
-                Add_Health(healthRegen);
-                Add_Oxygen(oxygenRegen);
-                Add_Energy(energyRegen);
-            }
-
+                        
             //reset timer
             timer = 0;
         }
     }
+
     // Methods ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void Stats()
+    {//manages stat drains and regens
+
+        if (eva == true)
+        {//player is on EVA
+
+            Remove_Oxygen(oxygenDrain);
+
+            if (oxygen == 0)
+            {//damage player if out of oxygen
+                Remove_Health(noOxygenHealthDrain);
+            }
+
+            if (health == 0)
+            {//delay die slightly for healthbar to catch up
+                Invoke("Die", 1f);
+            }
+        }
+        else
+        {//player is in ship
+
+            //health regen
+            if (health < maxHealth)
+            {
+                Add_Health(healthRegen);
+            }
+            
+            //oxygen regen
+            if (oxygen < maxOxygen)
+            {
+                Add_Oxygen(oxygenRegen);
+            }
+            
+            //energy regen
+            if (energy < maxEnergy)
+            {
+                Add_Energy(energyRegen);
+            }
+        }
+    }
+
     private void Warnings()
     {
         //toggle for flashing warnings
@@ -127,6 +165,11 @@ public class Player_Stats : MonoBehaviour
         {
             energyWarning.enabled = false;
         }
+    }
+
+    private void Die()
+    {//player is out of health, display game over screen
+        gameState.GameOver();
     }
 
     //Set Methods /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,9 +215,9 @@ public class Player_Stats : MonoBehaviour
         energyBar.Remove(amount);
     }
 
-    public void IsOutside(bool value)
+    public void EVA(bool value)
     {//for oxygen drain toggling
-        isOutside = value;
+        eva = value;
     }
 
     //Get Methods /////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -15,6 +15,7 @@ public class Player_Movement : MonoBehaviour
     private Rigidbody2D rigidbody;
     private GameObject player;
     private Player_Stats playerStats;
+    private GameState gameState;
 
     private bool isFlying;
     private bool isGrounded;
@@ -25,17 +26,23 @@ public class Player_Movement : MonoBehaviour
     void Start()
     {// Start is called before the first frame update
 
+        //get components
         player = GameObject.Find("Player");
         rigidbody = player.GetComponent<Rigidbody2D>();
         animator = GameObject.Find("Player/Sprite").GetComponent<Animator>();
         playerStats = player.GetComponent<Player_Stats>();
+        gameState = GameObject.Find("Game State").GetComponent<GameState>();
     }
         
     void Update()
     {// Update is called once per frame
 
-        PlayerInput();
-        CheckVelocity();
+        if (gameState.Paused() == false)
+        {
+            PlayerInput();
+            CheckVelocity();
+        }
+        
     }
 
     private void PlayerInput()
