@@ -1,23 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player_Stats : MonoBehaviour
 {
+    [Header("Warnings")]
+    [SerializeField] private int warningThreshold;
     [Header("Health")]
-    [SerializeField] private int maxHealth;
+    [SerializeField] private float maxHealth;
     [SerializeField] private float healthRegen;
     [Header("Oxygen")]
-    [SerializeField] private int maxOxygen;
+    [SerializeField] private float maxOxygen;
     [SerializeField] private float oxygenRegen;
     [SerializeField] private float oxygenDrain;
     [Header("Energy")]
-    [SerializeField] private int maxEnergy;
+    [SerializeField] private float maxEnergy;
     [SerializeField] private float energyRegen;
 
     private Stat_Bar healthBar;
     private Stat_Bar oxygenBar;
     private Stat_Bar energyBar;
+    private Image healthWarning;
+    private Image oxygenWarning;
+    private Image energyWarning;
 
     private float health;
     private float oxygen;
@@ -25,6 +31,7 @@ public class Player_Stats : MonoBehaviour
     private bool isOutside;
 
     private float timer;
+    private bool warning;
 
 
     void Start()
@@ -34,6 +41,9 @@ public class Player_Stats : MonoBehaviour
         healthBar = GameObject.Find("HUD/Canvas/Health Bar").GetComponent<Stat_Bar>();
         oxygenBar = GameObject.Find("HUD/Canvas/Oxygen Bar").GetComponent<Stat_Bar>();
         energyBar = GameObject.Find("HUD/Canvas/Energy Bar").GetComponent<Stat_Bar>();
+        healthWarning = GameObject.Find("HUD/Canvas/Health Bar/Warning").GetComponent<Image>();
+        oxygenWarning = GameObject.Find("HUD/Canvas/Oxygen Bar/Warning").GetComponent<Image>();
+        energyWarning = GameObject.Find("HUD/Canvas/Energy Bar/Warning").GetComponent<Image>();
 
         //initialize stats and bars
         health = maxHealth;
@@ -42,6 +52,9 @@ public class Player_Stats : MonoBehaviour
         healthBar.Initialize(maxHealth);
         oxygenBar.Initialize(maxOxygen);
         energyBar.Initialize(maxEnergy);
+        healthWarning.enabled = false;
+        oxygenWarning.enabled = false;
+        energyWarning.enabled = false;
                 
         //initialize states
         isOutside = true;
@@ -54,6 +67,8 @@ public class Player_Stats : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= 1)
         {
+            Warnings();
+
             if (isOutside == true)
             {//drain oxygen
                 Remove_Oxygen(oxygenDrain);
@@ -67,6 +82,50 @@ public class Player_Stats : MonoBehaviour
 
             //reset timer
             timer = 0;
+        }
+    }
+    // Methods ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void Warnings()
+    {
+        //toggle for flashing warnings
+        switch (warning)
+        {
+            case true:
+                warning = false;
+                break;
+            case false:
+                warning = true;
+                break;
+        }
+
+        //health
+        if (((health / maxHealth) * 100) <= warningThreshold)
+        {
+            healthWarning.enabled = warning;
+        }
+        else
+        {
+            healthWarning.enabled = false;
+        }
+
+        //oxygen
+        if (((oxygen / maxOxygen) * 100) <= warningThreshold)
+        {
+            oxygenWarning.enabled = warning;
+        }
+        else
+        {
+            oxygenWarning.enabled = false;
+        }
+
+        //energy
+        if (((energy / maxEnergy) * 100) <= warningThreshold)
+        {
+            energyWarning.enabled = warning;
+        }
+        else
+        {
+            energyWarning.enabled = false;
         }
     }
 

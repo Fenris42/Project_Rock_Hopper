@@ -1552,6 +1552,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8124094846184045847, guid: 8d80ee103a8841d4da58a40f5b5c111e, type: 3}
+      propertyPath: warningThreshold
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
