@@ -47,18 +47,22 @@ public class Laser : MonoBehaviour
 
     private void PlayerInput()
     {
-        if (Input.GetMouseButton(0))
-        {//left mouse click
-            Fire(true);
-        }
-        else if (Input.GetMouseButton(1))
-        {//right mouse click
-            Suck(true);
-        }
-        else
-        {//animation resets
-            Fire(false);
-            Suck(false);
+        if (playerStats.Get_EVA() == true)
+        {//only active if player outside
+
+            if (Input.GetMouseButton(0))
+            {//left mouse click
+                Fire(true);
+            }
+            else if (Input.GetMouseButton(1))
+            {//right mouse click
+                Suck(true);
+            }
+            else
+            {//resets
+                Fire(false);
+                Suck(false);
+            }
         }
     }
 

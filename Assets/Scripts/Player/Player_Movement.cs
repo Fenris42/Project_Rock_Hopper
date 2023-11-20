@@ -47,38 +47,42 @@ public class Player_Movement : MonoBehaviour
 
     private void PlayerInput()
     {
-        //point player in direction of mouse
-        Aim();
-        
-        //Movement
-        if (Input.GetKey(KeyCode.A))
-        {//left
-            MoveLeft();
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {//right
-            MoveRight();
-        }
-        else
-        {//return to idle
-            animator.SetBool("Run", false);
-        }
+        if (playerStats.Get_EVA() == true)
+        {//only active if player is outside
 
-        //Jump/Flight
-        if (Input.GetKey(KeyCode.Space))
-        {
-            if (isGrounded == true)
-            {//jump if grounded
-                Jump();
+            //point player in direction of mouse
+            Aim();
+
+            //Movement
+            if (Input.GetKey(KeyCode.A))
+            {//left
+                MoveLeft();
             }
-            else if (isGrounded == false)
-            {//activate jetpack if in in the air
-                Jetpack(true);
+            else if (Input.GetKey(KeyCode.D))
+            {//right
+                MoveRight();
             }
-        }
-        else
-        {//reset jetpack
-            Jetpack(false);
+            else
+            {//return to idle
+                animator.SetBool("Run", false);
+            }
+
+            //Jump/Flight
+            if (Input.GetKey(KeyCode.Space))
+            {
+                if (isGrounded == true)
+                {//jump if grounded
+                    Jump();
+                }
+                else if (isGrounded == false)
+                {//activate jetpack if in in the air
+                    Jetpack(true);
+                }
+            }
+            else
+            {//reset jetpack
+                Jetpack(false);
+            }
         }
     }
 

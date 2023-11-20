@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 2408673831598861682}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -269,11 +269,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4257bed4eabfc7c419bba7577eab663a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  warningThreshold: 0
   maxHealth: 100
   healthRegen: 10
   maxOxygen: 100
   oxygenRegen: 10
   oxygenDrain: 1
+  noOxygenHealthDrain: 0
   maxEnergy: 100
   energyRegen: 10
 --- !u!114 &2408673831598861682

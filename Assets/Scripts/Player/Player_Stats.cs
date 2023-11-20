@@ -60,7 +60,7 @@ public class Player_Stats : MonoBehaviour
         energyWarning.enabled = false;
                 
         //initialize states
-        eva = true;
+        eva = false;
     }
         
     void Update()
@@ -215,8 +215,8 @@ public class Player_Stats : MonoBehaviour
         energyBar.Remove(amount);
     }
 
-    public void EVA(bool value)
-    {//for oxygen drain toggling
+    public void Set_EVA(bool value)
+    {//for stat drain/regen toggling
         eva = value;
     }
 
@@ -234,6 +234,11 @@ public class Player_Stats : MonoBehaviour
     public float Get_Energy()
     {
         return energy;
+    }
+
+    public bool Get_EVA()
+    {
+        return eva;
     }
 
     //Utility Methods /////////////////////////////////////////////////////////////////////////////////////////////////////

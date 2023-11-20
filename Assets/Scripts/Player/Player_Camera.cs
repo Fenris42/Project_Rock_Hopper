@@ -6,18 +6,28 @@ public class Player_Camera : MonoBehaviour
 {
     private Camera camera;
     private GameObject player;
-
+    private bool enabled;
     
     void Start()
     {// Start is called before the first frame update
 
         camera = Camera.main;
         player = GameObject.Find("Player");
+        enabled = true;
     }
-        
+
     void Update()
     {// Update is called once per frame
-        FollowPlayer();
+
+        if (enabled == true)
+        {
+            FollowPlayer();
+        }
+    }
+
+    public void Enabled(bool value)
+    {//toggle follow cam on/off
+        enabled = value;
     }
 
     private void FollowPlayer()
