@@ -30,9 +30,9 @@ public class Mining : MonoBehaviour
     void Start()
     {
         //get components
-        groundTilemap = GameObject.Find("Ground Tiles").GetComponent<Tilemap>();
-        oreTilemap = GameObject.Find("Ore Tiles").GetComponent<Tilemap>();
-        crackTilemap = GameObject.Find("Crack Tiles").GetComponent<Tilemap>();
+        groundTilemap = GameObject.Find("Level/Grid/Ground Tiles").GetComponent<Tilemap>();
+        oreTilemap = GameObject.Find("Level/Grid/Ore Tiles").GetComponent<Tilemap>();
+        crackTilemap = GameObject.Find("Level/Grid/Crack Tiles").GetComponent<Tilemap>();
         generation = GameObject.Find("Level").GetComponent<Generation>();
     }
 
