@@ -8,6 +8,8 @@ public class Asteroid : MonoBehaviour
     private Asteroid_Generation generation;
     private Lander lander;
     private Player_Stats playerStats;
+    private Controls controls;
+
 
 
     void Start()
@@ -17,7 +19,7 @@ public class Asteroid : MonoBehaviour
         generation = GameObject.Find("Level").GetComponent<Asteroid_Generation>();
         lander = GameObject.Find("Lander").GetComponent<Lander>();
         playerStats = GameObject.Find("Player").GetComponent<Player_Stats>();
-
+        controls = GameObject.Find("Game Logic").GetComponent<Controls>();
         Initialize();
     }
 

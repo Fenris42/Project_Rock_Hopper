@@ -8,7 +8,7 @@ public class GameState : MonoBehaviour
 {
     private GameObject gameOverScreen;
     private Image pauseIcon;
-
+    private Controls controls;
     private bool paused;
 
 
@@ -18,6 +18,7 @@ public class GameState : MonoBehaviour
         //get components
         gameOverScreen = GameObject.Find("UI/Canvas/Game Over");
         pauseIcon = GameObject.Find("UI/Canvas/HUD/Pause").GetComponent<Image>();
+        controls = GameObject.Find("Game Logic").GetComponent<Controls>();
 
         Initialize();
     }
@@ -30,6 +31,7 @@ public class GameState : MonoBehaviour
     public void GameOver()
     {
         DisplayGameOver(true);
+
     }
 
     private void DisplayGameOver(bool gameover)
@@ -53,18 +55,21 @@ public class GameState : MonoBehaviour
             paused = true;
             Time.timeScale = 0;
             pauseIcon.enabled = true;
+            controls.Set_ControlsEnabled(false);
         }
         else
         {
             paused = false;
             Time.timeScale = 1;
             pauseIcon.enabled = false;
+            controls.Set_ControlsEnabled(true);
         }
     }
 
     public void Respawn()
     {
-        
+        //close game over screen
+        DisplayGameOver(false);
 
         //get current scene
         string scene = SceneManager.GetActiveScene().name;

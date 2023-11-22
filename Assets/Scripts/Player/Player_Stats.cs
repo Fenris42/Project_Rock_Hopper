@@ -31,9 +31,10 @@ public class Player_Stats : MonoBehaviour
     private float energy;
 
     private GameState gameState;
-    private bool eva;
     private float timer;
     private bool warning;
+    private bool statDrain;
+
 
 
     void Start()
@@ -46,7 +47,7 @@ public class Player_Stats : MonoBehaviour
         healthWarning = GameObject.Find("UI/Canvas/HUD/Health Bar/Warning").GetComponent<Image>();
         oxygenWarning = GameObject.Find("UI/Canvas/HUD/Oxygen Bar/Warning").GetComponent<Image>();
         energyWarning = GameObject.Find("UI/Canvas/HUD/Energy Bar/Warning").GetComponent<Image>();
-        gameState = GameObject.Find("Game State").GetComponent<GameState>();
+        gameState = GameObject.Find("Game Logic").GetComponent<GameState>();
 
         //initialize stats and bars
         health = maxHealth;
@@ -59,8 +60,6 @@ public class Player_Stats : MonoBehaviour
         oxygenWarning.enabled = false;
         energyWarning.enabled = false;
                 
-        //initialize states
-        eva = false;
     }
         
     void Update()
@@ -85,8 +84,8 @@ public class Player_Stats : MonoBehaviour
     private void Stats()
     {//manages stat drains and regens
 
-        if (eva == true)
-        {//player is on EVA
+        if (statDrain == true)
+        {
 
             Remove_Oxygen(oxygenDrain);
 
@@ -101,24 +100,12 @@ public class Player_Stats : MonoBehaviour
             }
         }
         else
-        {//player is in ship
+        {
 
             //health regen
             if (health < maxHealth)
             {
                 Add_Health(healthRegen);
-            }
-            
-            //oxygen regen
-            if (oxygen < maxOxygen)
-            {
-                Add_Oxygen(oxygenRegen);
-            }
-            
-            //energy regen
-            if (energy < maxEnergy)
-            {
-                Add_Energy(energyRegen);
             }
         }
     }
@@ -215,9 +202,9 @@ public class Player_Stats : MonoBehaviour
         energyBar.Remove(amount);
     }
 
-    public void Set_EVA(bool value)
-    {//for stat drain/regen toggling
-        eva = value;
+    public void Set_StatDrain(bool value)
+    {
+        statDrain = value;
     }
 
     //Get Methods /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,11 +236,6 @@ public class Player_Stats : MonoBehaviour
     public float Get_MaxEnergy()
     {
         return maxEnergy;
-    }
-
-    public bool Get_EVA()
-    {
-        return eva;
     }
 
     //Utility Methods /////////////////////////////////////////////////////////////////////////////////////////////////////

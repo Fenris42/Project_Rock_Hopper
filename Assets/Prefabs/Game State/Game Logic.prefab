@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2782301809349662997}
   - component: {fileID: 7494215861459347481}
   m_Layer: 0
-  m_Name: Game State
+  m_Name: Game Logic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

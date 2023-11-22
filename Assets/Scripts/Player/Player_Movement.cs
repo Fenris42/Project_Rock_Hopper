@@ -31,7 +31,7 @@ public class Player_Movement : MonoBehaviour
         rigidbody = player.GetComponent<Rigidbody2D>();
         animator = GameObject.Find("Player/Sprite").GetComponent<Animator>();
         playerStats = player.GetComponent<Player_Stats>();
-        gameState = GameObject.Find("Game State").GetComponent<GameState>();
+        gameState = GameObject.Find("Game Logic").GetComponent<GameState>();
     }
         
     void Update()

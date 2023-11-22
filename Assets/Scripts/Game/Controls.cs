@@ -9,7 +9,9 @@ public class Controls : MonoBehaviour
     private Lander lander;
     private Laser laser;
 
-
+    private bool controlsEnabled;
+    private bool playerControlsEnabled;
+    private bool landerControlsEnabled;
     
     void Start()
     {// Start is called before the first frame update
@@ -31,47 +33,49 @@ public class Controls : MonoBehaviour
 
     private void PlayerInput()
     {
-        //Player Controls/////////////////////////////////////////////////////////
-        if (lander.Get_PlayerOnBoard() == false)
-        {
-            //point player in direction of mouse
-            player_movement.Aim();
+        if (controlsEnabled == true)
+        {//game is running
 
-            //Movement///////////////////
-            if (Input.GetKey(KeyCode.A))
-            {//left
-                player_movement.MoveLeft();
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {//right
-                player_movement.MoveRight();
-            }
-            else
-            {//return to idle
-                player_movement.Idle();
-            }
-
-            //Jump/Flight
-            if (Input.GetKey(KeyCode.Space))
+            //Player Controls/////////////////////////////////////////////////////////
+            if (playerControlsEnabled == true)
             {
-                if (player_movement.Get_Grounded() == true)
-                {//jump if grounded
-                    player_movement.Jump();
-                }
-                else if (player_movement.Get_Grounded() == false)
-                {//activate jetpack if in in the air
-                    player_movement.Jetpack(true);
-                }
-            }
-            else
-            {//reset jetpack
-                player_movement.Jetpack(false);
-            }
+                //point player in direction of mouse
+                player_movement.Aim();
 
-            //Laser///////////////////////////
-            if (lander.Get_PlayerOnBoard() == false)
-            {//only active if player outside
+                //Movement///////////////////
+                if (Input.GetKey(KeyCode.A))
+                {//left
+                    player_movement.MoveLeft();
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {//right
+                    player_movement.MoveRight();
+                }
+                else
+                {//return to idle
+                    player_movement.Idle();
+                }
 
+                //Jump/Flight
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    if (player_movement.Get_Grounded() == true)
+                    {//jump if grounded
+                        player_movement.Jump();
+                    }
+                    else if (player_movement.Get_Grounded() == false)
+                    {//activate jetpack if in in the air
+                        player_movement.Jetpack(true);
+                    }
+                }
+                else
+                {//reset jetpack
+                    player_movement.Jetpack(false);
+                }
+
+
+
+                //Laser///////////////////////////
                 if (Input.GetMouseButton(0))
                 {//left mouse click
                     laser.Fire(true);
@@ -86,41 +90,51 @@ public class Controls : MonoBehaviour
                     laser.Suck(false);
                 }
             }
-            else
-            {//resets
-                laser.Fire(false);
-                laser.Suck(false);
-            }
-        }
 
 
 
-        //Lander Controls/////////////////////////////////////////////////////////
-        if (lander.Get_PlayerOnBoard() == true)
-        {
+            //Lander Controls/////////////////////////////////////////////////////////
+            if (landerControlsEnabled == true)
+            {
 
-        }
-
-
-
-        //Interact/////////////////////////////////////////////////////////
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            //Enter/Exit Lander
-            if (lander.Get_PlayerOnBoard() == false && lander.Get_PlayerInRange() == true)
-            {//player is not onboard and in range of door - > enter lander
-                lander.EnterLander();
-            }
-            else if (lander.Get_PlayerOnBoard() == true)
-            {//player is inside lander - > exit lander
-                lander.ExitLander();
             }
 
+
+
+            //Interact/////////////////////////////////////////////////////////
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                //Enter/Exit Lander
+                if (lander.Get_PlayerOnBoard() == false && lander.Get_PlayerInRange() == true)
+                {//player is not onboard and in range of door - > enter lander
+                    lander.EnterLander();
+                }
+                else if (lander.Get_PlayerOnBoard() == true)
+                {//player is inside lander - > exit lander
+                    lander.ExitLander();
+                }
+
+            }
+
+
+
+            //Menus/////////////////////////////////////////////////////////
         }
 
+    }
 
+    public void Set_PlayerControlsEnabled(bool value)
+    {
+        playerControlsEnabled = value;
+    }
 
-        //Menus/////////////////////////////////////////////////////////
+    public void Set_LanderControlsEnabled(bool value)
+    {
+        landerControlsEnabled = value;
+    }
 
+    public void Set_ControlsEnabled(bool value)
+    {
+        controlsEnabled = value;
     }
 }
