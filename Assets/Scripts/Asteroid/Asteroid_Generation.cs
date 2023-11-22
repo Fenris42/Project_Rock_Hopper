@@ -5,7 +5,7 @@ using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Generation : MonoBehaviour
+public class Asteroid_Generation : MonoBehaviour
 {
     [Header("Dimensions")]
     [SerializeField] private int spaceHeight;
@@ -70,27 +70,18 @@ public class Generation : MonoBehaviour
         groundTilemap = GameObject.Find("Level/Grid/Ground Tiles").GetComponent<Tilemap>();
         oreTilemap = GameObject.Find("Level/Grid/Ore Tiles").GetComponent<Tilemap>();
         fowTilemap = GameObject.Find("Level/Grid/FOW Tiles").GetComponent<Tilemap>();
+
         topBoundary = GameObject.Find("Level/Boundary/Top");
         bottomBoundary = GameObject.Find("Level/Boundary/Bottom");
         leftBoundary = GameObject.Find("Level/Boundary/Left");
         rightBoundary = GameObject.Find("Level/Boundary/Right");
 
-        //generate level
-        Generate();
     }
 
-    /*
-    void Update()
-    {// Update is called once per frame
-
-    }
-    */
-
-    private void Generate()
+    public void Generate()
     {//generate level
 
         Vector3Int tile = new Vector3Int(0, 0, 0);
-
 
         //space generation
         for (int y = ((spaceHeight - 1) + bufferLayers); y >= 0; y--)

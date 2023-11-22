@@ -1261,6 +1261,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1649952413}
+  - component: {fileID: 1649952417}
   - component: {fileID: 1649952415}
   - component: {fileID: 1649952414}
   - component: {fileID: 1649952416}
@@ -1367,6 +1368,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fowSemi: {fileID: 11400000, guid: 3ce20b0fba88843419b4ce39e6b59a36, type: 2}
+--- !u!114 &1649952417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1649952412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aef67f4dd9e86e44a8628af519a622e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1667654769
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1385,7 +1398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3037818007018858257, guid: 8d80ee103a8841d4da58a40f5b5c111e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.654
+      value: 0.51
       objectReference: {fileID: 0}
     - target: {fileID: 3037818007018858257, guid: 8d80ee103a8841d4da58a40f5b5c111e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1958,6 +1971,10 @@ PrefabInstance:
     - target: {fileID: 8355813062091477267, guid: 0b991f88d1993ae469380429e6e48ed6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507787777087891564, guid: 0b991f88d1993ae469380429e6e48ed6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8634695712161895801, guid: 0b991f88d1993ae469380429e6e48ed6, type: 3}
       propertyPath: m_AnchorMax.y

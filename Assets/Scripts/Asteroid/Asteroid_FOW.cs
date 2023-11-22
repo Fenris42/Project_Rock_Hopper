@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class FOW : MonoBehaviour
+public class Asteroid_FOW : MonoBehaviour
 {
     [SerializeField] private Tile fowSemi;
     private GameObject player;

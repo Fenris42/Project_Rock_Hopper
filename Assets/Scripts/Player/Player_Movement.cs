@@ -39,55 +39,12 @@ public class Player_Movement : MonoBehaviour
 
         if (gameState.Paused() == false)
         {
-            PlayerInput();
             CheckVelocity();
-        }
-        
-    }
-
-    private void PlayerInput()
-    {
-        if (playerStats.Get_EVA() == true)
-        {//only active if player is outside
-
-            //point player in direction of mouse
-            Aim();
-
-            //Movement
-            if (Input.GetKey(KeyCode.A))
-            {//left
-                MoveLeft();
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {//right
-                MoveRight();
-            }
-            else
-            {//return to idle
-                animator.SetBool("Run", false);
-            }
-
-            //Jump/Flight
-            if (Input.GetKey(KeyCode.Space))
-            {
-                if (isGrounded == true)
-                {//jump if grounded
-                    Jump();
-                }
-                else if (isGrounded == false)
-                {//activate jetpack if in in the air
-                    Jetpack(true);
-                }
-            }
-            else
-            {//reset jetpack
-                Jetpack(false);
-            }
         }
     }
 
     // Movement /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void Aim()
+    public void Aim()
     {//point laser in direction of mouse
 
         //player location
@@ -115,7 +72,7 @@ public class Player_Movement : MonoBehaviour
         }
     }
 
-    private void MoveLeft()
+    public void MoveLeft()
     {
         if (isFlying == false && isGrounded == true)
         {
@@ -130,7 +87,7 @@ public class Player_Movement : MonoBehaviour
         player.transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
     }
 
-    private void MoveRight()
+    public void MoveRight()
     {
         if (isFlying == false && isGrounded == true)
         {
@@ -145,7 +102,12 @@ public class Player_Movement : MonoBehaviour
         player.transform.position += (Vector3.right * moveSpeed) * Time.deltaTime;
     }
 
-    private void Jump()
+    public void Idle()
+    {
+        animator.SetBool("Run", false);
+    }
+
+    public void Jump()
     {
         rigidbody.velocity += (Vector2.up * jumpSpeed) * Time.deltaTime;
 
@@ -154,7 +116,7 @@ public class Player_Movement : MonoBehaviour
         Invoke("ResetJetpackCooldown", 0.5f);
     }
 
-    private void Jetpack(bool on)
+    public void Jetpack(bool on)
     {
         if (on == true && jetpackCooldown == false && playerStats.Get_Energy() > 0)
         {//jetpack on
@@ -177,8 +139,6 @@ public class Player_Movement : MonoBehaviour
     }
 
     // Utility /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-
     private void ResetJetpackCooldown()
     {
         jetpackCooldown = false;
@@ -198,6 +158,12 @@ public class Player_Movement : MonoBehaviour
     //TO DO
     //Do ground check on if feet are touching ground only. Currently touching any ground in any direction is causing jump/fly resets incorrectly
     //Make room for edge case of player is standing on loot
+
+    public bool Get_Grounded()
+    {
+        return isGrounded;
+    }
+
     private void IsGrounded(bool grounded)
     {
         if (grounded == false)

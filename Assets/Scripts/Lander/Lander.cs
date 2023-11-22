@@ -23,68 +23,48 @@ public class Lander : MonoBehaviour
         doorRange = GameObject.Find("Lander/Colliders/Door").GetComponent<Range_Check>();
         playerSpawn = GameObject.Find("Lander/Player Spawn");
         floor = GameObject.Find("Lander/Colliders/Floor").GetComponent <BoxCollider2D>();
-
-        //initialize variables
-        Initialize();
-    }
-        
-    void Update()
-    {// Update is called once per frame
-        PlayerInput();
     }
 
-    private void Initialize()
-    {//initialize players state to be inside of lander
-
-        playerOnBoard = true;
-        player.transform.position = playerSpawn.transform.position;
-        playerSprite.enabled = false;
-        playerStats.Set_EVA(false);
-    }
-
-    private void PlayerInput()
+    public void EnterLander()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {//Enter/Exit lander
-            Boarding();
-        }
+        //player is now onboard lander
+        playerOnBoard = true;
+
+        //toggle stat regen on
+        playerStats.Set_EVA(false);
+
+        //disable player sprite
+        playerSprite.enabled = false;
+
+        //enable landers floor
+        floor.enabled = true;
+
+        //move player to landers spawn position
+        player.transform.position = playerSpawn.transform.position;
     }
 
-    private void Boarding()
-    {//Enter/Exit lander
+    public void ExitLander()
+    {
+        //player is now outside lander
+        playerOnBoard = false;
 
-        if (playerOnBoard == false && doorRange.PlayerInRange() == true)
-        {//player is not onboard and in range of door - > enter lander
+        //toggle stat regen off
+        playerStats.Set_EVA(true);
 
-            //player is now onboard lander
-            playerOnBoard = true;
+        //enable player sprite
+        playerSprite.enabled = true;
 
-            //toggle stat regen on
-            playerStats.Set_EVA(false);
+        //disable landers floor
+        floor.enabled = false;
+    }
 
-            //disable player sprite
-            playerSprite.enabled = false;
+    public bool Get_PlayerOnBoard()
+    {
+        return playerOnBoard;
+    }
 
-            //enable landers floor
-            floor.enabled = true;
-
-            //move player to landers spawn position
-            player.transform.position = playerSpawn.transform.position;
-        }
-        else if (playerOnBoard == true)
-        {//player is inside lander
-
-            //player is now outside lander
-            playerOnBoard = false;
-
-            //toggle stat regen off
-            playerStats.Set_EVA(true);
-
-            //enable player sprite
-            playerSprite.enabled = true;
-
-            //disable landers floor
-            floor.enabled = false;
-        }
+    public bool Get_PlayerInRange()
+    {
+        return doorRange.PlayerInRange();
     }
 }

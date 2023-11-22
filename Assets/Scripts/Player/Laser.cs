@@ -19,7 +19,7 @@ public class Laser : MonoBehaviour
     private GameObject player;
     private SpriteRenderer laserSprite;
     private Player_Inventory playerInventory;
-    private Mining mining;
+    private Asteroid_Mining mining;
     private Player_Stats playerStats;
     
 
@@ -32,41 +32,14 @@ public class Laser : MonoBehaviour
         player = GameObject.Find("Player");
         playerInventory = player.GetComponent<Player_Inventory>();
         laserSprite = GameObject.Find("Player/Laser").GetComponent<SpriteRenderer>();
-        mining = GameObject.Find("Level").GetComponent<Mining>();
+        mining = GameObject.Find("Level").GetComponent<Asteroid_Mining>();
         playerStats = player.GetComponent <Player_Stats>();
 
         //initialize states
         laserSprite.enabled = false;
     }
-        
-    void Update()
-    {// Update is called once per frame
 
-        PlayerInput();
-    }
-
-    private void PlayerInput()
-    {
-        if (playerStats.Get_EVA() == true)
-        {//only active if player outside
-
-            if (Input.GetMouseButton(0))
-            {//left mouse click
-                Fire(true);
-            }
-            else if (Input.GetMouseButton(1))
-            {//right mouse click
-                Suck(true);
-            }
-            else
-            {//resets
-                Fire(false);
-                Suck(false);
-            }
-        }
-    }
-
-    private void Fire(bool fire)
+    public void Fire(bool fire)
     {//fire laser and check for contacts
 
         if (fire == true && playerStats.Get_Energy() > 0)
@@ -99,7 +72,7 @@ public class Laser : MonoBehaviour
         }
     }
 
-    private void Suck(bool suck)
+    public void Suck(bool suck)
     {//suck up drops
 
         if (suck == true && playerStats.Get_Energy() > 0)

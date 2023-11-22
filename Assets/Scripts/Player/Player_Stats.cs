@@ -226,14 +226,29 @@ public class Player_Stats : MonoBehaviour
         return health; 
     }
 
+    public float Get_MaxHealth()
+    {
+        return maxHealth;
+    }
+
     public float Get_Oxygen()
     {
         return oxygen;
     }
 
+    public float Get_MaxOxygen()
+    {
+        return maxOxygen;
+    }
+
     public float Get_Energy()
     {
         return energy;
+    }
+
+    public float Get_MaxEnergy()
+    {
+        return maxEnergy;
     }
 
     public bool Get_EVA()

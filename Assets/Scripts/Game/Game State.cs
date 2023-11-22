@@ -19,20 +19,35 @@ public class GameState : MonoBehaviour
         gameOverScreen = GameObject.Find("UI/Canvas/Game Over");
         pauseIcon = GameObject.Find("UI/Canvas/HUD/Pause").GetComponent<Image>();
 
-        //initialize states
-        gameOverScreen.SetActive(false);
-        Pause(false);
+        Initialize();
     }
 
+    private void Initialize()
+    {//initialize states
+        DisplayGameOver(false);
+    }
 
     public void GameOver()
     {
-        Pause(true);
-        gameOverScreen.SetActive(true);
+        DisplayGameOver(true);
     }
 
-    public void Pause(bool pause)
+    private void DisplayGameOver(bool gameover)
     {
+        if (gameover == true)
+        {
+            Pause(true);
+            gameOverScreen.SetActive(true);
+        }
+        else
+        {
+            Pause(false);
+            gameOverScreen.SetActive(false);
+        }
+    }
+    public void Pause(bool pause)
+    {//pause/unpause game
+
         if (pause == true)
         {
             paused = true;
@@ -48,12 +63,21 @@ public class GameState : MonoBehaviour
     }
 
     public void Respawn()
-    {//reload level
-        SceneManager.LoadScene("Asteroid");
+    {
+        
+
+        //get current scene
+        string scene = SceneManager.GetActiveScene().name;
+
+        if (scene == "Asteroid")
+        {
+            Asteroid asteroid = GameObject.Find("Level").GetComponent<Asteroid>();
+            asteroid.ReSpawn();
+        }
     }
 
     public void Quit()
-    {
+    {//Close game
         Application.Quit();
     }
 

@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Mining : MonoBehaviour
+public class Asteroid_Mining : MonoBehaviour
 {
     [SerializeField] private float digTime;
     [SerializeField] Tile crack_1;
@@ -23,7 +23,7 @@ public class Mining : MonoBehaviour
     private Tilemap crackTilemap;
     private float timer;
     private List<Vector3Int> updateQueue = new List<Vector3Int>();
-    private Generation generation;
+    private Asteroid_Generation generation;
 
 
     // Start is called before the first frame update
@@ -33,7 +33,7 @@ public class Mining : MonoBehaviour
         groundTilemap = GameObject.Find("Level/Grid/Ground Tiles").GetComponent<Tilemap>();
         oreTilemap = GameObject.Find("Level/Grid/Ore Tiles").GetComponent<Tilemap>();
         crackTilemap = GameObject.Find("Level/Grid/Crack Tiles").GetComponent<Tilemap>();
-        generation = GameObject.Find("Level").GetComponent<Generation>();
+        generation = GameObject.Find("Level").GetComponent<Asteroid_Generation>();
     }
 
     // Update is called once per frame
