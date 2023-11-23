@@ -41,12 +41,12 @@ public class Player_Stats : MonoBehaviour
     {// Start is called before the first frame update
 
         //get components
-        healthBar = GameObject.Find("UI/Canvas/HUD/Health Bar").GetComponent<Stat_Bar>();
-        oxygenBar = GameObject.Find("UI/Canvas/HUD/Oxygen Bar").GetComponent<Stat_Bar>();
-        energyBar = GameObject.Find("UI/Canvas/HUD/Energy Bar").GetComponent<Stat_Bar>();
-        healthWarning = GameObject.Find("UI/Canvas/HUD/Health Bar/Warning").GetComponent<Image>();
-        oxygenWarning = GameObject.Find("UI/Canvas/HUD/Oxygen Bar/Warning").GetComponent<Image>();
-        energyWarning = GameObject.Find("UI/Canvas/HUD/Energy Bar/Warning").GetComponent<Image>();
+        healthBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Health Bar").GetComponent<Stat_Bar>();
+        oxygenBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Oxygen Bar").GetComponent<Stat_Bar>();
+        energyBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Energy Bar").GetComponent<Stat_Bar>();
+        healthWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Health Bar/Warning").GetComponent<Image>();
+        oxygenWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Oxygen Bar/Warning").GetComponent<Image>();
+        energyWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Energy Bar/Warning").GetComponent<Image>();
         gameState = GameObject.Find("Game Logic").GetComponent<GameState>();
 
         //initialize stats and bars
