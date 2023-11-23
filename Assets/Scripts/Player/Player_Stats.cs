@@ -12,24 +12,40 @@ public class Player_Stats : MonoBehaviour
     [SerializeField] private float healthRegen;
     [Header("Oxygen")]
     [SerializeField] private float maxOxygen;
-    [SerializeField] private float oxygenRegen;
     [SerializeField] private float oxygenDrain;
     [SerializeField] private float noOxygenHealthDrain;
     [Header("Energy")]
     [SerializeField] private float maxEnergy;
-    [SerializeField] private float energyRegen;
+    [SerializeField] private float energyDrain;
+    [SerializeField] private float noEnergyHealthDrain;
+    [Header("Fuel")]
+    [SerializeField] private float maxFuel;
 
+    //stat bars
+    //health
     private Stat_Bar healthBar;
-    private Stat_Bar oxygenBar;
-    private Stat_Bar energyBar;
     private Image healthWarning;
-    private Image oxygenWarning;
-    private Image energyWarning;
-
     private float health;
+
+    //oxygen
+    private Stat_Bar oxygenBar;
+    private Image oxygenWarning;
     private float oxygen;
+
+    //energy
+    private Stat_Bar energyBar;
+    private Image energyWarning;
     private float energy;
 
+    //fuel
+    private Stat_Bar fuelBar;
+    private Image fuelWarning;
+    private float fuel;
+
+    //buff bar
+    private GameObject noOxygenDebuff;
+    private GameObject freezingDebuff;
+    
     private GameState gameState;
     private float timer;
     private bool warning;
@@ -44,22 +60,36 @@ public class Player_Stats : MonoBehaviour
         healthBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Health Bar").GetComponent<Stat_Bar>();
         oxygenBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Oxygen Bar").GetComponent<Stat_Bar>();
         energyBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Energy Bar").GetComponent<Stat_Bar>();
-        healthWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Health Bar/Warning").GetComponent<Image>();
-        oxygenWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Oxygen Bar/Warning").GetComponent<Image>();
-        energyWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Energy Bar/Warning").GetComponent<Image>();
+        fuelBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Fuel Bar").GetComponent<Stat_Bar>();
+        healthWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Health Bar/Warning/Sprite").GetComponent<Image>();
+        oxygenWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Oxygen Bar/Warning/Sprite").GetComponent<Image>();
+        energyWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Energy Bar/Warning/Sprite").GetComponent<Image>();
+        fuelWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Fuel Bar/Warning/Sprite").GetComponent<Image>();
         gameState = GameObject.Find("Game Logic").GetComponent<GameState>();
+        noOxygenDebuff = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Buff Bar/No O2");
+        freezingDebuff = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Buff Bar/Freezing");
 
-        //initialize stats and bars
+        //initialize stats
         health = maxHealth;
         oxygen = maxOxygen;
         energy = maxEnergy;
+        fuel = maxFuel;
+
+        //initialize stat bars
         healthBar.Initialize(maxHealth);
         oxygenBar.Initialize(maxOxygen);
         energyBar.Initialize(maxEnergy);
+        fuelBar.Initialize(maxFuel);
+
+        //initialize warnings
         healthWarning.enabled = false;
         oxygenWarning.enabled = false;
         energyWarning.enabled = false;
-                
+        fuelWarning.enabled = false;
+        
+        //initialize buff bar
+        noOxygenDebuff.SetActive(false);
+        freezingDebuff.SetActive(false);
     }
         
     void Update()
@@ -86,12 +116,18 @@ public class Player_Stats : MonoBehaviour
 
         if (statDrain == true)
         {
-
+            //drain stats from life support
             Remove_Oxygen(oxygenDrain);
+            Remove_Energy(energyDrain);
 
             if (oxygen == 0)
             {//damage player if out of oxygen
                 Remove_Health(noOxygenHealthDrain);
+            }
+
+            if (energy == 0)
+            {//damage player from freeze damage
+                Remove_Health(noEnergyHealthDrain);
             }
 
             if (health == 0)
@@ -101,7 +137,6 @@ public class Player_Stats : MonoBehaviour
         }
         else
         {
-
             //health regen
             if (health < maxHealth)
             {
@@ -133,7 +168,10 @@ public class Player_Stats : MonoBehaviour
             healthWarning.enabled = false;
         }
 
+
+
         //oxygen
+        //warning
         if (((oxygen / maxOxygen) * 100) <= warningThreshold)
         {
             oxygenWarning.enabled = warning;
@@ -143,6 +181,18 @@ public class Player_Stats : MonoBehaviour
             oxygenWarning.enabled = false;
         }
 
+        //no 02 debuff
+        if (oxygen == 0)
+        {
+            noOxygenDebuff.SetActive(true);
+        }
+        else
+        {
+            noOxygenDebuff.SetActive(false);
+        }
+
+
+
         //energy
         if (((energy / maxEnergy) * 100) <= warningThreshold)
         {
@@ -151,6 +201,28 @@ public class Player_Stats : MonoBehaviour
         else
         {
             energyWarning.enabled = false;
+        }
+
+        //freezing debuff
+        if (energy == 0)
+        {
+            freezingDebuff.SetActive(true);
+        }
+        else
+        {
+            freezingDebuff.SetActive(false);
+        }
+
+
+
+        //fuel
+        if (((fuel / maxFuel) * 100) <= warningThreshold)
+        {
+            fuelWarning.enabled = warning;
+        }
+        else
+        {
+            fuelWarning.enabled = false;
         }
     }
 
@@ -202,6 +274,20 @@ public class Player_Stats : MonoBehaviour
         energyBar.Remove(amount);
     }
 
+    public void Add_Fuel(float amount)
+    {//add energy and update HUD stat bar
+        fuel += amount;
+        Sanitize();
+        fuelBar.Add(amount);
+    }
+
+    public void Remove_Fuel(float amount)
+    {//remove energy and update HUD stat bar
+        fuel -= amount;
+        Sanitize();
+        fuelBar.Remove(amount);
+    }
+
     public void Set_StatDrain(bool value)
     {
         statDrain = value;
@@ -223,6 +309,11 @@ public class Player_Stats : MonoBehaviour
         return oxygen;
     }
 
+    public float Get_Fuel()
+    {
+        return fuel;
+    }
+
     public float Get_MaxOxygen()
     {
         return maxOxygen;
@@ -236,6 +327,11 @@ public class Player_Stats : MonoBehaviour
     public float Get_MaxEnergy()
     {
         return maxEnergy;
+    }
+
+    public float Get_MaxFuel()
+    {
+        return maxFuel;
     }
 
     //Utility Methods /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,6 +366,16 @@ public class Player_Stats : MonoBehaviour
         if (energy > maxEnergy)
         {
             energy = maxEnergy;
+        }
+
+        //fuel
+        if (fuel < 0)
+        {
+            fuel = 0;
+        }
+        if (fuel > maxFuel)
+        {
+            fuel = maxFuel;
         }
     }
 }

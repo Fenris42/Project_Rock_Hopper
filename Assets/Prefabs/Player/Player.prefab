@@ -234,8 +234,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   jumpSpeed: 50
-  flySpeed: 5
-  flyEnergy: 5
+  jetpackSpeed: 5
+  jetpackFuel: 10
 --- !u!114 &66364622965094378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,11 +273,12 @@ MonoBehaviour:
   maxHealth: 100
   healthRegen: 10
   maxOxygen: 100
-  oxygenRegen: 10
   oxygenDrain: 1
   noOxygenHealthDrain: 10
   maxEnergy: 100
-  energyRegen: 10
+  energyDrain: 1
+  noEnergyHealthDrain: 2
+  maxFuel: 100
 --- !u!114 &2408673831598861682
 MonoBehaviour:
   m_ObjectHideFlags: 0

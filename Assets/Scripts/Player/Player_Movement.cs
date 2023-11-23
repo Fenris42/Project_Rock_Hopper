@@ -8,8 +8,8 @@ public class Player_Movement : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
     [SerializeField] float jumpSpeed;
-    [SerializeField] float flySpeed;
-    [SerializeField] float flyEnergy;
+    [SerializeField] float jetpackSpeed;
+    [SerializeField] float jetpackFuel;
 
     private Animator animator;
     private Rigidbody2D rigidbody;
@@ -118,7 +118,7 @@ public class Player_Movement : MonoBehaviour
 
     public void Jetpack(bool on)
     {
-        if (on == true && jetpackCooldown == false && playerStats.Get_Energy() > 0)
+        if (on == true && jetpackCooldown == false && playerStats.Get_Fuel() > 0)
         {//jetpack on
 
             //resets downward gravity velocity to prevent stacking gravity while in flight
@@ -126,10 +126,10 @@ public class Player_Movement : MonoBehaviour
 
             //fly
             animator.SetBool("Fly", true);
-            player.transform.position += (Vector3.up * flySpeed) * Time.deltaTime;
+            player.transform.position += (Vector3.up * jetpackSpeed) * Time.deltaTime;
 
-            //drain energy
-            playerStats.Remove_Energy(flyEnergy * Time.deltaTime);
+            //drain fuel
+            playerStats.Remove_Fuel(jetpackFuel * Time.deltaTime);
         }
         else
         {//reset jetpack
