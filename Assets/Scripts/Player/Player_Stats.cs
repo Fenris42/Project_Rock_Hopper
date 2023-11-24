@@ -121,12 +121,12 @@ public class Player_Stats : MonoBehaviour
             Remove_Energy(energyDrain);
 
             if (oxygen == 0)
-            {//damage player if out of oxygen
+            {//damage player if out of oxygen (life support)
                 Remove_Health(noOxygenHealthDrain);
             }
 
             if (energy == 0)
-            {//damage player from freeze damage
+            {//damage player if out of energy (life support)
                 Remove_Health(noEnergyHealthDrain);
             }
 
@@ -158,7 +158,7 @@ public class Player_Stats : MonoBehaviour
                 break;
         }
 
-        //health
+        //health//////////////////////////////////////////////
         if (((health / maxHealth) * 100) <= warningThreshold)
         {
             healthWarning.enabled = warning;
@@ -168,9 +168,7 @@ public class Player_Stats : MonoBehaviour
             healthWarning.enabled = false;
         }
 
-
-
-        //oxygen
+        //oxygen//////////////////////////////////////////////
         //warning
         if (((oxygen / maxOxygen) * 100) <= warningThreshold)
         {
@@ -191,9 +189,8 @@ public class Player_Stats : MonoBehaviour
             noOxygenDebuff.SetActive(false);
         }
 
-
-
-        //energy
+        //energy//////////////////////////////////////////////
+        //warning
         if (((energy / maxEnergy) * 100) <= warningThreshold)
         {
             energyWarning.enabled = warning;
@@ -213,9 +210,8 @@ public class Player_Stats : MonoBehaviour
             freezingDebuff.SetActive(false);
         }
 
-
-
-        //fuel
+        //fuel////////////////////////////////////////////
+        //warning
         if (((fuel / maxFuel) * 100) <= warningThreshold)
         {
             fuelWarning.enabled = warning;

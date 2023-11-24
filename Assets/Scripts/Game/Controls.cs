@@ -55,22 +55,23 @@ public class Controls : MonoBehaviour
                 {//return to idle
                     player_movement.Idle();
                 }
+                
+                if (Input.GetKeyDown(KeyCode.Space))
+                {//Jump
+                    player_movement.Jump();
+                }
 
-                //Jump/Flight
-                if (Input.GetKey(KeyCode.Space))
-                {
-                    if (player_movement.Get_Grounded() == true)
-                    {//jump if grounded
-                        player_movement.Jump();
-                    }
-                    else if (player_movement.Get_Grounded() == false)
-                    {//activate jetpack if in in the air
-                        player_movement.Jetpack(true);
-                    }
+                if (Input.GetKey(KeyCode.W))
+                {//fly up
+                    player_movement.JetpackUp();
+                }
+                else if (Input.GetKey(KeyCode.S))
+                {//fly down
+                    player_movement.JetpackDown();
                 }
                 else
                 {//reset jetpack
-                    player_movement.Jetpack(false);
+                    player_movement.ResetJetpack();
                 }
 
 

@@ -10,6 +10,7 @@ public class Player_Movement : MonoBehaviour
     [SerializeField] float jumpSpeed;
     [SerializeField] float jetpackSpeed;
     [SerializeField] float jetpackFuel;
+    [SerializeField] float velocityLimit;
 
     private Animator animator;
     private Rigidbody2D rigidbody;
@@ -17,10 +18,8 @@ public class Player_Movement : MonoBehaviour
     private Player_Stats playerStats;
     private GameState gameState;
 
-    private bool isFlying;
     private bool isGrounded;
-    private bool jetpackCooldown;
-    
+   
 
     
     void Start()
@@ -32,15 +31,6 @@ public class Player_Movement : MonoBehaviour
         animator = GameObject.Find("Player/Sprite").GetComponent<Animator>();
         playerStats = player.GetComponent<Player_Stats>();
         gameState = GameObject.Find("Game Logic").GetComponent<GameState>();
-    }
-        
-    void Update()
-    {// Update is called once per frame
-
-        if (gameState.Paused() == false)
-        {
-            CheckVelocity();
-        }
     }
 
     // Movement /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +64,7 @@ public class Player_Movement : MonoBehaviour
 
     public void MoveLeft()
     {
-        if (isFlying == false && isGrounded == true)
+        if (isGrounded == true)
         {
             animator.SetBool("Run", true);
         }
@@ -82,14 +72,26 @@ public class Player_Movement : MonoBehaviour
         {
             animator.SetBool("Run", false);
         }
-        
+
+        //temp code else where for player direction
         //player.transform.localScale = new Vector3(-1, 1, 1);
-        player.transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
+
+        if (isGrounded == true)
+        {//player running
+            player.transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
+        }
+        else
+        {//player flying
+            if (rigidbody.velocity.x > -velocityLimit)
+            {
+                rigidbody.velocity += (Vector2.left * moveSpeed) * Time.deltaTime;
+            }
+        }
     }
 
     public void MoveRight()
     {
-        if (isFlying == false && isGrounded == true)
+        if (isGrounded == true)
         {
             animator.SetBool("Run", true);
         }
@@ -98,8 +100,20 @@ public class Player_Movement : MonoBehaviour
             animator.SetBool("Run", false);
         }
 
+        //temp code else where for player direction
         //player.transform.localScale = new Vector3(1, 1, 1);
-        player.transform.position += (Vector3.right * moveSpeed) * Time.deltaTime;
+
+        if (isGrounded == true)
+        {//player running
+            player.transform.position += (Vector3.right * moveSpeed) * Time.deltaTime;
+        }
+        else
+        {//player flying
+            if (rigidbody.velocity.x < velocityLimit)
+            {
+                rigidbody.velocity += (Vector2.right * moveSpeed) * Time.deltaTime;
+            }
+        }
     }
 
     public void Idle()
@@ -109,49 +123,63 @@ public class Player_Movement : MonoBehaviour
 
     public void Jump()
     {
-        rigidbody.velocity += (Vector2.up * jumpSpeed) * Time.deltaTime;
+        if (isGrounded == true)
+        {
+            rigidbody.velocity += (Vector2.up * jumpSpeed);
 
-        //prevents jump transitioning to flight instantly
-        jetpackCooldown = true;
-        Invoke("ResetJetpackCooldown", 0.5f);
+            //prevent player from being yeeted into space if jumping on ore (shrugs)
+            rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, jumpSpeed);
+        }
     }
 
-    public void Jetpack(bool on)
+    public void JetpackUp()
     {
-        if (on == true && jetpackCooldown == false && playerStats.Get_Fuel() > 0)
+        if (playerStats.Get_Fuel() > 0)
         {//jetpack on
 
             //resets downward gravity velocity to prevent stacking gravity while in flight
-            rigidbody.velocity = Vector3.zero;
+            //rigidbody.velocity = Vector3.zero;
 
             //fly
-            animator.SetBool("Fly", true);
-            player.transform.position += (Vector3.up * jetpackSpeed) * Time.deltaTime;
+            animator.SetBool("Jetpack", true);
+            //player.transform.position += (Vector3.up * jetpackSpeed) * Time.deltaTime;
+
+            if (rigidbody.velocity.y < velocityLimit)
+            {
+                rigidbody.velocity += (Vector2.up * jetpackSpeed) * Time.deltaTime;
+            }
+            
+            //drain fuel
+            playerStats.Remove_Fuel(jetpackFuel * Time.deltaTime);
+        }
+    }
+
+    public void JetpackDown()
+    {
+        if (playerStats.Get_Fuel() > 0)
+        {//jetpack on
+
+            //resets downward gravity velocity to prevent stacking gravity while in flight
+            //rigidbody.velocity = Vector3.zero;
+
+            //fly
+            animator.SetBool("Jetpack", true);
+            //player.transform.position += (Vector3.up * jetpackSpeed) * Time.deltaTime;
+
+            if (rigidbody.velocity.y > -velocityLimit)
+            {
+                rigidbody.velocity += (Vector2.down * jetpackSpeed) * Time.deltaTime;
+            }
 
             //drain fuel
             playerStats.Remove_Fuel(jetpackFuel * Time.deltaTime);
         }
-        else
-        {//reset jetpack
-            animator.SetBool("Fly", false);
-            isFlying = false;
-        }
     }
 
     // Utility /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void ResetJetpackCooldown()
+    public void ResetJetpack()
     {
-        jetpackCooldown = false;
-    }
-
-    private void CheckVelocity()
-    {//check if player is exceeding max velocity
-     //Note: if player jumped while standing on loot you will get yeeted into space
-
-        if (rigidbody.velocity.y > 2)
-        {
-            rigidbody.velocity = Vector3.zero;
-        }
+        animator.SetBool("Jetpack", false);
     }
 
     // Ground Check /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,18 +195,21 @@ public class Player_Movement : MonoBehaviour
     private void IsGrounded(bool grounded)
     {
         if (grounded == false)
-        {
+        {//player not grounded
             animator.SetBool("Jump", true);
             isGrounded = false;
         }
         else
-        {
+        {//player grounded
             animator.SetBool("Jump", false);
             isGrounded = true;
+
+            //reset velocity
+            rigidbody.velocity = Vector3.zero;
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {//player is grounded
@@ -193,5 +224,4 @@ public class Player_Movement : MonoBehaviour
             IsGrounded(false);
         }
     }
-
 }
