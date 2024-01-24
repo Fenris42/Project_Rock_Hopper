@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: Regolith
+  m_Name: Deep Regolith
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: c522b17108f191a40b73b2f9866e5259, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d9d7074b303d97341b1c93660c0eeba3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

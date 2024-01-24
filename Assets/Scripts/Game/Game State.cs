@@ -16,7 +16,7 @@ public class GameState : MonoBehaviour
     {// Start is called before the first frame update
 
         //get components
-        gameOverScreen = GameObject.Find("UI/Canvas/Game Over");
+        gameOverScreen = GameObject.Find("UI/Canvas/Menus/Game Over");
         pauseIcon = GameObject.Find("UI/Canvas/HUD/Pause").GetComponent<Image>();
         controls = GameObject.Find("Game Logic").GetComponent<Controls>();
 
