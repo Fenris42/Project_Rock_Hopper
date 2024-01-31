@@ -57,17 +57,17 @@ public class Player_Stats : MonoBehaviour
     {// Start is called before the first frame update
 
         //get components
-        healthBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Health Bar").GetComponent<Stat_Bar>();
-        oxygenBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Oxygen Bar").GetComponent<Stat_Bar>();
-        energyBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Energy Bar").GetComponent<Stat_Bar>();
-        fuelBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Fuel Bar").GetComponent<Stat_Bar>();
-        healthWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Health Bar/Warning/Sprite").GetComponent<Image>();
-        oxygenWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Oxygen Bar/Warning/Sprite").GetComponent<Image>();
-        energyWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Energy Bar/Warning/Sprite").GetComponent<Image>();
-        fuelWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Fuel Bar/Warning/Sprite").GetComponent<Image>();
+        healthBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Health Bar").GetComponent<Stat_Bar>();
+        oxygenBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Oxygen Bar").GetComponent<Stat_Bar>();
+        energyBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Energy Bar").GetComponent<Stat_Bar>();
+        fuelBar = GameObject.Find("UI/Canvas/HUD/Stat Bars/Fuel Bar").GetComponent<Stat_Bar>();
+        healthWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Health Bar/Warning/Sprite").GetComponent<Image>();
+        oxygenWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Oxygen Bar/Warning/Sprite").GetComponent<Image>();
+        energyWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Energy Bar/Warning/Sprite").GetComponent<Image>();
+        fuelWarning = GameObject.Find("UI/Canvas/HUD/Stat Bars/Fuel Bar/Warning/Sprite").GetComponent<Image>();
         gameState = GameObject.Find("Game Logic").GetComponent<GameState>();
-        noOxygenDebuff = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Buff Bar/No O2");
-        freezingDebuff = GameObject.Find("UI/Canvas/HUD/Stat Bars/Player/Buff Bar/Freezing");
+        noOxygenDebuff = GameObject.Find("UI/Canvas/HUD/Stat Bars/Buff Bar/No O2");
+        freezingDebuff = GameObject.Find("UI/Canvas/HUD/Stat Bars/Buff Bar/Freezing");
 
         //initialize stats
         health = maxHealth;

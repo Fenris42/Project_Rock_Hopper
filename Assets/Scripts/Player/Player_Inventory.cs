@@ -35,13 +35,13 @@ public class Player_Inventory : MonoBehaviour
     {// Start is called before the first frame update
 
         //get components
-        massText = GameObject.Find("UI/Canvas/HUD/Inventory/Background/Mass/Count").GetComponent<TMP_Text>();
-        rockText = GameObject.Find("UI/Canvas/HUD/Inventory/Background/Rock/Count").GetComponent<TMP_Text>();
-        iceText = GameObject.Find("UI/Canvas/HUD/Inventory/Background/Ice/Count").GetComponent<TMP_Text>();
-        ironText = GameObject.Find("UI/Canvas/HUD/Inventory/Background/Iron/Count").GetComponent<TMP_Text>();
-        copperText = GameObject.Find("UI/Canvas/HUD/Inventory/Background/Copper/Count").GetComponent<TMP_Text>();
-        goldText = GameObject.Find("UI/Canvas/HUD/Inventory/Background/Gold/Count").GetComponent<TMP_Text>();
-        titaniumText = GameObject.Find("UI/Canvas/HUD/Inventory/Background/Titanium/Count").GetComponent<TMP_Text>();
+        massText = GameObject.Find("UI/Canvas/HUD/Inventory/Border/Background/Mass/Count").GetComponent<TMP_Text>();
+        rockText = GameObject.Find("UI/Canvas/HUD/Inventory/Border/Background/Rock/Count").GetComponent<TMP_Text>();
+        iceText = GameObject.Find("UI/Canvas/HUD/Inventory/Border/Background/Ice/Count").GetComponent<TMP_Text>();
+        ironText = GameObject.Find("UI/Canvas/HUD/Inventory/Border/Background/Iron/Count").GetComponent<TMP_Text>();
+        copperText = GameObject.Find("UI/Canvas/HUD/Inventory/Border/Background/Copper/Count").GetComponent<TMP_Text>();
+        goldText = GameObject.Find("UI/Canvas/HUD/Inventory/Border/Background/Gold/Count").GetComponent<TMP_Text>();
+        titaniumText = GameObject.Find("UI/Canvas/HUD/Inventory/Border/Background/Titanium/Count").GetComponent<TMP_Text>();
 
         //initialize fields
         mass = 0;
